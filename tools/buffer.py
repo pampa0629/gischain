@@ -1,7 +1,6 @@
+import geopandas as gpd
 
 def buffer(datafile:str, radius:float, output:str):
-    # print("buffer:",datafile,radius)
-    import geopandas as gpd
     data = gpd.read_file(datafile)
     result = data.buffer(radius)
     result.to_file(output)

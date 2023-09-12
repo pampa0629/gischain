@@ -6,7 +6,7 @@ def extract_content(string):
     return string[index_left+1:index_right]
 
 def predeal(content:str):
-    print("predeal:",content)
+    print(f"大语言模型的返回结果如下：\n{content}")
     content = extract_content(content) # 去掉前后的 []
     
     content = content.replace('\\n', '')

@@ -1,6 +1,5 @@
 from llm import chatglm
 from tools import define
-# from . import tools
 
 prompt = """
 你现在是一个人工智能助手，现在要做一个gis领域的空间分析功能。
@@ -15,8 +14,9 @@ prompt = """
 """
 
 class GISChain:
-    def __init__(self, llm="chatglm", tools=None) -> None:
+    def __init__(self, key, llm="chatglm", tools=None) -> None:
         self.llm = llm
+        chatglm.set_api_key(key)
         if tools == None:
             tools = define.get_tools_name()
             discs = ""
@@ -28,17 +28,20 @@ class GISChain:
         # 构造一下提示词
         global prompt
         text  = prompt.format(instruction=instruction,tools=self.discs)
-        print("to llm text:",text)
+        print(f"输入给大语言模型的内容如下:{text}")
         tools = chatglm.invoke_llm(text)
-        print("tools:",type(tools),len(tools),tools)
+        print(f"解析得到的工具有{len(tools)}个，列表和参数如下:")
+        toolstr = [f'工具: {item}' for item in tools]
+        print('\n'.join(toolstr))
+
         result = ""
         for tool in tools:
-            print(tool)
-            tool['inputs']['output'] = tool['output']
+            # python只支持一个可变参数，这句话把output参数加上
+            tool['inputs']['output'] = tool['output'] 
             result = define.call_tool(tool['name'], **tool['inputs'])
-            print(result)
+            print(f"工具 {tool['name']} 的执行结果为：{result}")
         return result
 
-def init_gischain(llm="chatglm", tools=None):
-    return GISChain(llm, tools)
+def init_gischain(key, llm="chatglm", tools=None):
+    return GISChain(key, llm, tools)
     

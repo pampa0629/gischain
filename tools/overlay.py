@@ -1,6 +1,6 @@
+import geopandas as gpd
+
 def overlay(datafile1:str, datafile2:str, output:str):
-    # print("overlay:",datafile1,datafile2)
-    import geopandas as gpd
     data1 = gpd.read_file(datafile1)
     data2 = gpd.read_file(datafile2)
     result = gpd.overlay(data1, data2, how='intersection')
