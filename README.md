@@ -19,6 +19,10 @@ TODO LIST：
 Q&A：
 1，为什么不直接用langchain？
 回答：做了尝试，发现在未使用ChatGPT的情况下，经常出现格式解析错误的情况，且很难定位修复，还不如参考langchain的思路自行实现。
+2，gdal 用 pip install gdal安装失败怎么办？
+回答：换用 conda install gdal 可能就好了。
+3，提示openai没有ChatComletion属性，怎么办？
+回答：这是因为openai的版本过低，需要升级到至少0.28.1。先 pip uninstall openai ,再 pip install openai即可。
 
 v0.0.3
 1，增加对gpt4的支持
