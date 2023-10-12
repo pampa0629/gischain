@@ -1,5 +1,6 @@
 from tools import define
 from llm.init_llm import init_llm 
+from showdag import showdag
 
 def init_gischain(llm="chatglm", key=None, tools=None):
     return GISChain(llm, key, tools)
@@ -25,16 +26,18 @@ class GISChain:
         self.discs = discs
 
     # 运行用户指令
-    def run(self, instruction):
+    def run(self, instruction, show=False):
         tools = self.run_llm(instruction)
-        
-        # 按顺序，真正执行工具
-        result = ""
-        for tool in tools:
-            # python只支持一个可变参数，这句话把output参数加上
-            tool['inputs']['output'] = tool['output'] 
-            result = define.call_tool(tool['name'], **tool['inputs'])
-            print(f"工具 {tool['name']} 的执行结果为：{result}")
+        if show:
+            import multiprocessing
+            child_process = multiprocessing.Process(target=showdag, args=(tools,))
+            # 启动子进程
+            child_process.start()
+            # showdag(tools)
+
+        result = self.run_tools(tools)
+        # 等待子进程结束
+        child_process.join()
         return result
 
     # 运行大语言模型，得到要执行的工具列表
@@ -49,4 +52,13 @@ class GISChain:
         print('\n'.join(toolstr))
         return tools
         
-        
+    # 运行工具
+    def run_tools(self, tools):
+        # 按顺序，真正执行工具
+        result = ""
+        for tool in tools:
+            # python只支持一个可变参数，这句话把output参数加上
+            tool['inputs']['output'] = tool['output'] 
+            result = define.call_tool(tool['name'], **tool['inputs'])
+            print(f"工具 {tool['name']} 的执行结果为：{result}")
+        return result
