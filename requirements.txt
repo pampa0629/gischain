@@ -4,3 +4,5 @@ gdal
 zhipuai
 dashscope
 openai
+networkx
+matplotlib
