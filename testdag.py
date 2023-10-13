@@ -61,6 +61,11 @@ text = """
 
 import json
 from showdag import showdag
+from runtools import multi_run_tools
 
-tools = json.loads(text)
-showdag(tools)
+if __name__ == "__main__":
+
+    tools = json.loads(text)
+    # showdag(tools)
+    result = multi_run_tools(tools)
+    print(result)

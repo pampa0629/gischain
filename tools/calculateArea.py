@@ -20,6 +20,9 @@ def calculateArea(datafile:str, output=None) -> float:
         result = calculateAreaFromRaster(datafile)
     elif ext == ".shp":
         result = calculateAreaFromVector(datafile)
+    if output != None:
+        with open(output, "w") as f:
+            f.write(str(result))
     return result
 
 def calculateAreaFromRaster(datafile:str) -> float:

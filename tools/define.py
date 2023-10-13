@@ -15,11 +15,13 @@ tools_mapping = {
     # "calculateArea": calculateArea,
 }
 
-def call_tool(name, **kwargs):
+def call_tool(name, result_dict, **kwargs):
     if name in tools_mapping:
         func = tools_mapping[name]["func"]
         print(f"开始运行工具 {name} ，参数为：{kwargs}")
-        return func(**kwargs)
+        result = func(**kwargs)
+        result_dict[name] = result
+        return result
     else:
         print(f"没有找到名字为 {name} 的工具")
         return None

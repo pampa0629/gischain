@@ -19,21 +19,46 @@ def draw_network_with_arrows(G, pos):
         # 此行确保箭头与图的边界不会被裁剪
         plt.plot()
 
+import re, os
+
+# 判断text是否是数值型
+def is_numeric(text):
+    pattern = r'^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$'
+    return bool(re.match(pattern, text))
+
+# 判断tool中，input 是否准备就绪; 就绪返回"ready",否则返回"noready"
+# 如果是数值型、字符串类型，则直接OK；如果是文件型，则判断文件是否存在
+def input_ready_status(key, value):
+    if isinstance(value, (int, float)) or is_numeric(value) or os.path.isfile(value):
+        return "ready"
+    else:
+        return "noready"
+
 # 从tasks中构造图
 def buildGaphic(G, tasks):
     # 添加任务和其输入输出到图中
     for task in tasks:
         task_name = task["name"]
-        G.add_node(task_name, color='green', type='task')
+        # task 节点增加status属性，包括以下状态：
+        # todo  尚未处理，等到所有inputs都准备好后，就可以开始执行
+        # ready inputs已经准备好，可以开始执行
+        # doing 正在执行中
+        # done  执行完毕
+        G.add_node(task_name, color='green', type='task', status='todo')
         
+        # data 节点增加status属性，包括以下状态：
+        # noready  尚未准备好，等待上游task的输出
+        # ready 已经准备好，可以为后续task使用
         inputs = task["inputs"]
         for key,value in inputs.items():
-            G.add_node(value, color='lightblue', type='data')
-            G.add_edge(value, task_name)
+            status = input_ready_status(key, value)
+            G.add_node(value, color='lightblue', type='data', status=status)
+            # 对于 edge而言，区分input和output
+            G.add_edge(value, task_name, type='input')
             
         output = task["output"]
-        G.add_node(output, color='red', type='data')
-        G.add_edge(task_name, output)
+        G.add_node(output, color='red', type='data', status='noready')
+        G.add_edge(task_name, output, type='output')
 
 # 从图中提取颜色映射
 def get_color_mapping(G, tasks):

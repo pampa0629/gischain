@@ -33,9 +33,12 @@ class GISChain:
             child_process = multiprocessing.Process(target=showdag, args=(tools,))
             # 启动子进程
             child_process.start()
-            # showdag(tools)
 
-        result = self.run_tools(tools)
+        import runtools
+        # 单进程顺序执行
+        # result = self.run_tools(tools)
+        # 多进程并行执行
+        result = runtools.multi_run_tools(tools)
         # 等待子进程结束
         child_process.join()
         return result
@@ -52,13 +55,3 @@ class GISChain:
         print('\n'.join(toolstr))
         return tools
         
-    # 运行工具
-    def run_tools(self, tools):
-        # 按顺序，真正执行工具
-        result = ""
-        for tool in tools:
-            # python只支持一个可变参数，这句话把output参数加上
-            tool['inputs']['output'] = tool['output'] 
-            result = define.call_tool(tool['name'], **tool['inputs'])
-            print(f"工具 {tool['name']} 的执行结果为：{result}")
-        return result
