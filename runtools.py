@@ -16,8 +16,8 @@ def task_is_ready(G, node):
     inputs = G.predecessors(node)
     ready = True
     for input in inputs:
-        print(input)
-        print(G.nodes[input])
+        # print(input)
+        # print(G.nodes[input])
         if G.nodes[input]["status"] != "ready":
             ready = False
             break
