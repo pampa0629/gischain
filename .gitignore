@@ -65,3 +65,10 @@ temp/buffer_result.prj
 temp/buffer_result.dbf
 temp/buffer_result.cpg
 output/final_area_result.txt
+output/affected_land_area.txt
+output/occupied_land_area.json
+*.cpg
+*.dbf
+*.prj
+*.shp
+*.shx

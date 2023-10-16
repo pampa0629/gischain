@@ -15,9 +15,9 @@ if __name__ == '__main__':
     # instruction = "修一条铁路，宽度为50米，需要计算占用周边坡度小于10度的耕地面积。铁路是railway.shp，耕地是land.shp，地形数据是terrain.tif。"
 
     # 构造gischain，支持多种llm，基本都需要给出key
-    chain = init_gischain(llm="chatglm", key=glm_key) # 可以支持简单的指令
+    # chain = init_gischain(llm="chatglm", key=glm_key) # 可以支持简单的指令
     # chain = init_gischain(llm="qwen-turbo", key=qwen_key) # 简单的都会出错
-    # chain = init_gischain(llm="gpt4", key=gpt_key) # 可以支持复杂的指令
+    chain = init_gischain(llm="gpt4", key=gpt_key) # 可以支持复杂的指令
 
     # 运行用户指令，show=True表示显示工具执行的DAG图
     output = chain.run(instruction,True)

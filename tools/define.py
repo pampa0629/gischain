@@ -26,11 +26,18 @@ def call_tool(name, result_dict, **kwargs):
         print(f"没有找到名字为 {name} 的工具")
         return None
 
+import multiprocessing
+
+def is_main_process():
+    return multiprocessing.current_process().name == "MainProcess"
+
 def add_tool(name, func, disc):
     tools_mapping[name] = {}
     tools_mapping[name]["func"] = func
     tools_mapping[name]["disc"] = disc
-    print(f"初始化工具 {name} 成功，内容为：{disc}")
+    # 仅在主进程中输出工具的初始化信息
+    if is_main_process():
+        print(f"初始化工具 {name} 成功，内容为：{disc}")
 
 def get_tool_disc(name):
     if name in tools_mapping:

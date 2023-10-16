@@ -1,4 +1,4 @@
-from . import define, buffer,overlay,calculateArea,slope,extractByMask,extractByValues,rasterOverlay,polygon2mask
+from . import buffer, define, overlay,calculateArea,slope,extractByMask,extractByValues,rasterOverlay,polygon2mask
 
 def module_init():
     define.add_tool("buffer", buffer.buffer, buffer.disc)

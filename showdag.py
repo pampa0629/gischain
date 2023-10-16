@@ -40,15 +40,15 @@ def buildGaphic(G, tasks):
     for task in tasks:
         task_name = task["name"]
         # task 节点增加status属性，包括以下状态：
-        # todo  尚未处理，等到所有inputs都准备好后，就可以开始执行
-        # ready inputs已经准备好，可以开始执行
-        # doing 正在执行中
-        # done  执行完毕
+        #   todo  尚未处理，等到所有inputs都准备好后，就可以开始执行
+        #   ready inputs已经准备好，可以开始执行
+        #   doing 正在执行中
+        #   done  执行完毕
         G.add_node(task_name, color='green', type='task', status='todo')
         
         # data 节点增加status属性，包括以下状态：
-        # noready  尚未准备好，等待上游task的输出
-        # ready 已经准备好，可以为后续task使用
+        #   noready  尚未准备好，等待上游task的输出
+        #   ready 已经准备好，可以为后续task使用
         inputs = task["inputs"]
         for key,value in inputs.items():
             status = input_ready_status(key, value)
