@@ -72,3 +72,5 @@ output/occupied_land_area.json
 *.prj
 *.shp
 *.shx
+output/calc_area_result.txt
+output/occupied_land_area.txt

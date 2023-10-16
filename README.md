@@ -18,6 +18,17 @@ gischain内部实现的技术原理图![技术原理图](architecture.png)
 4. 大语言模型按照规定的格式返回需要调用的工具列表及其运行参数
 5. gischain解析大语言模型的返回结果，并逐一执行工具
 
+## 部署 & 运行
+### 用conda创建新环境，再调用
+1. conda env create -f environment.yml
+2. conda activate gischain
+3. python example.py
+
+### 用pip安装相应的库，再调用
+1. 确认python版本为3.11.4或以上。可用conda新创建环境，命令：conda create -n youenv python=3.11.4
+2. pip install -r requirements.txt
+3. python example.py
+
 ## TODO LIST
 1. 目前只和在线的chatglm/qwen-turbo/gpt4做了适配，后续会考虑和更多大语言模型做适配，包括本地部署的大语言模型
 2. 目前只提供了少量gis工具作为例子，需要的话请自行实现更多工具，包括非空间算子工具

@@ -1,8 +1,8 @@
-numpy
-geopandas
-gdal
-zhipuai
-dashscope
-openai
-networkx
-matplotlib
+numpy==1.26.0
+dashscope==1.11.0
+geopandas==0.13.2
+gdal==3.7.2
+zhipuai==1.0.7
+networkx==3.1
+openai==0.28.1
+matplotlib==3.7.1
