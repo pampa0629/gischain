@@ -21,6 +21,8 @@ def call_tool(name, result_dict, **kwargs):
         print(f"开始运行工具 {name} ，参数为：{kwargs}")
         result = func(**kwargs)
         result_dict[name] = result
+        print(f"工具 {name} 执行结束，输出为：{result}")
+        # print(result_dict)
         return result
     else:
         print(f"没有找到名字为 {name} 的工具")

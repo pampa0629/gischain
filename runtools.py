@@ -7,8 +7,9 @@ def run_tools(tools):
     for tool in tools:
         # python只支持一个可变参数，这句话把output参数加上
         tool['inputs']['output'] = tool['output'] 
-        result = define.call_tool(tool['name'], **tool['inputs'])
-        print(f"工具 {tool['name']} 的执行结果为：{result}")
+        result_dict = {}
+        result = define.call_tool(tool['name'], result_dict, **tool['inputs'])
+        # print(f"工具 {tool['name']} 的执行结果为：{result}")
     return result
 
 # 判断一个工具是否可以运行，即是否所有的input是否都已经ready
@@ -67,7 +68,8 @@ def multi_run_tools(tools):
                 child_process = multiprocessing.Process(target=define.call_tool, args=(node,result_dict), kwargs=tool['inputs'])
                 child_process.start()
                 childs.append((node,child_process))
-
+        # print("result_dict:")
+        # print(result_dict)
         for node, child_process in childs:
             # 等待子进程结束
             child_process.join()
@@ -77,8 +79,10 @@ def multi_run_tools(tools):
             outputs = G.successors(node)
             for output in outputs:
                 G.nodes[output]["status"] = "ready"
+            # print(node)
+            # print(result_dict)
             result = result_dict[node]
-            print(f"工具 {node} 的执行结果为：{result}")
+            # print(f"工具 {node} 的执行结果为：{result}")
             # print(f"工具 {node} 运行完毕")
 
     # 不要忘记最后显式关闭Manager对象

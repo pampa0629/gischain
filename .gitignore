@@ -74,3 +74,6 @@ output/occupied_land_area.json
 *.shx
 output/calc_area_result.txt
 output/occupied_land_area.txt
+output/area_result.csv
+output/railway_land_area.txt
+output/totalArea.txt

@@ -30,7 +30,7 @@ gischain内部实现的技术原理图![技术原理图](architecture.png)
 3. python example.py
 
 ## TODO LIST
-1. 目前只和在线的chatglm/qwen-turbo/gpt4做了适配，后续会考虑和更多大语言模型做适配，包括本地部署的大语言模型
+1. 目前只和在线的chatglm/qwen-turbo/ErnieBot/gpt4做了适配，后续会考虑和更多大语言模型做适配，包括本地部署的大语言模型
 2. 目前只提供了少量gis工具作为例子，需要的话请自行实现更多工具，包括非空间算子工具
 3. 目前严重依赖于大语言模型本身的推理能力，后续考虑通过提示词工程，如ReACT等机制来完成更复杂的工具编排调用
 4. 通过向量匹配或微调等方式，支持工具数量众多的情况（避免token超量）
@@ -46,6 +46,9 @@ Q，提示openai没有ChatComletion属性，怎么办？
 A：这是因为openai的版本过低，需要升级到至少0.28.1。先 pip uninstall openai ,再 pip install openai即可。
 
 ## 版本说明
+### v0.0.6
+1. 增加文心一言（ErnieBot）作为大语言模型
+
 ### v0.0.5
 1. 内部执行工具时，采用多进程并行方式，提高运行效率
 2. 修改文件存储目录：中间结果文件存储到temp目录下，最终结果文件存储到output目录下

@@ -26,8 +26,9 @@ class GISChain:
         self.discs = discs
 
     # 运行用户指令
-    def run(self, instruction, show=False):
+    def run(self, instruction, show=True, multirun=False):
         tools = self.run_llm(instruction)
+        
         if show:
             import multiprocessing
             child_process = multiprocessing.Process(target=showdag, args=(tools,))
@@ -35,12 +36,14 @@ class GISChain:
             child_process.start()
 
         import runtools
-        # 单进程顺序执行
-        # result = self.run_tools(tools)
-        # 多进程并行执行
-        result = runtools.multi_run_tools(tools)
-        # 等待子进程结束
-        child_process.join()
+        if multirun: # 多进程并行执行
+            result = runtools.multi_run_tools(tools)
+        else: # 单进程顺序执行
+            result = runtools.run_tools(tools)
+        
+        # 等待showdag的子进程结束
+        if show:
+            child_process.join()
         return result
 
     # 运行大语言模型，得到要执行的工具列表

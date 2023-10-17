@@ -9,6 +9,9 @@ def init_llm(name, key=None):
     elif name == "qwen-turbo":
         from llm import qwen
         allm = qwen.QWen()
+    elif name == "ErnieBot":
+        from llm import erniebot
+        allm = erniebot.ErnieBot()
     elif name == "gpt4":
         from llm import gpt4
         allm = gpt4.GPT4()

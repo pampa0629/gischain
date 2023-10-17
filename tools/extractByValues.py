@@ -15,6 +15,10 @@ disc = """
 """
 
 def extractByValues(tifffile:str, min:float, max:float, output:str):
+    # 防止部分llm给出的是字符串
+    min = float(min) 
+    max = float(max) 
+
     # 打开输入文件
     ds = gdal.Open(tifffile)
     if ds is None:

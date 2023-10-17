@@ -14,6 +14,7 @@ disc = """
 
 def buffer(datafile:str, radius:float, output:str):
     data = gpd.read_file(datafile)
+    radius = float(radius) # 防止部分llm给出的是字符串
     result = data.buffer(radius)
     result.to_file(output)
     return output
