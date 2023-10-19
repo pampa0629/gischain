@@ -1,11 +1,10 @@
 from . import buffer, define, overlay,calculateArea,slope,extractByMask,extractByValues,rasterOverlay,polygon2mask
 
-def module_init():
-    define.add_tool("buffer", buffer.buffer, buffer.disc)
-    define.add_tool("overlay", overlay.overlay, overlay.disc)
+def module_init():    
     define.add_tool("calculateArea", calculateArea.calculateArea, calculateArea.disc)
+    define.add_tool("buffer", buffer.buffer, buffer.disc)
     define.add_tool("slope", slope.slope, slope.disc)
-
+    define.add_tool("overlay", overlay.overlay, overlay.disc)
     define.add_tool("extractByMask", extractByMask.extractByMask, extractByMask.disc)
     define.add_tool("extractByValues", extractByValues.extractByValues, extractByValues.disc)
     define.add_tool("rasterOverlay", rasterOverlay.rasterOverlay, rasterOverlay.disc)

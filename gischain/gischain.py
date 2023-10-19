@@ -1,6 +1,6 @@
 from tools import define
 from llm.init_llm import init_llm 
-from showdag import showdag
+from gischain.showdag import showdag
 
 def init_gischain(llm="chatglm", key=None, tools=None):
     return GISChain(llm, key, tools)
@@ -35,7 +35,7 @@ class GISChain:
             # 启动子进程
             child_process.start()
 
-        import runtools
+        import gischain.runtools as runtools
         if multirun: # 多进程并行执行
             result = runtools.multi_run_tools(tools)
         else: # 单进程顺序执行

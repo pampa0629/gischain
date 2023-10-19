@@ -60,8 +60,8 @@ text = """
 """
 
 import json
-from showdag import showdag
-from runtools import multi_run_tools
+from gischain.showdag import showdag
+from gischain.runtools import multi_run_tools
 
 if __name__ == "__main__":
 

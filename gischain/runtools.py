@@ -41,7 +41,7 @@ def find_tool(tools, name):
 # 并行执行list中的工具
 def multi_run_tools(tools):
 
-    from showdag import buildGaphic 
+    from gischain.showdag import buildGaphic 
     import networkx as nx
     import multiprocessing
 

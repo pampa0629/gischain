@@ -1,4 +1,4 @@
-from gischain import init_gischain
+from gischain.gischain import init_gischain
 
 import os
 # 设置禁用文件验证的环境变量
@@ -15,6 +15,8 @@ if __name__ == '__main__':
     # 通过 https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application/create 获取
     wenxin_ak = "Gev6k0qO9OPatIHCu41iCKAS"
     wenxin_sk = "M6GqjYAVygDm7Fqee1ENZQ9KEpk4a8Qh"    
+    # text2sql的key
+    text2sql_key = "MjBlODExNTQ5ZjVlYWFjMGM3NTQ1Y2RkMzJlNTBjNDYwZDc2ODM3OA=="
     # gpt4的key，通过 https://console.closeai-asia.com/ 获取
     gpt_key = 'sk-ohe7INluTagKkdGRXP2QGs14n0rhL7sKs5BMEJT41e0Ezwzm'
 
@@ -24,8 +26,9 @@ if __name__ == '__main__':
 
     # 构造gischain，支持多种llm，基本都需要给出key
     # chain = init_gischain(llm="chatglm", key=glm_key) # 可以支持简单的指令
-    # chain = init_gischain(llm="qwen-turbo", key=qwen_key) # 简单的都会出错
-    chain = init_gischain(llm="ErnieBot", key={"ak":wenxin_ak,"sk":wenxin_sk} ) 
+    chain = init_gischain(llm="qwen-turbo", key=qwen_key) # 简单的都会出错
+    # chain = init_gischain(llm="ErnieBot4", key={"ak":wenxin_ak,"sk":wenxin_sk} ) # 可以支持简单的指令
+    # chain = init_gischain(llm="text2sql", key=text2sql_key) # 简单的都会出错
     # chain = init_gischain(llm="gpt4", key=gpt_key) # 可以支持复杂的指令
 
     # 运行用户指令，show=True表示显示工具执行的DAG图

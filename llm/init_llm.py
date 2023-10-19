@@ -9,12 +9,15 @@ def init_llm(name, key=None):
     elif name == "qwen-turbo":
         from llm import qwen
         allm = qwen.QWen()
-    elif name == "ErnieBot":
+    elif name == "ErnieBot4":
         from llm import erniebot
         allm = erniebot.ErnieBot()
     elif name == "gpt4":
         from llm import gpt4
         allm = gpt4.GPT4()
+    elif name == "text2sql":
+        from llm import text2sql
+        allm = text2sql.Text2SQL()
     else:
         raise Exception("不支持的llm:"+ name)
     
