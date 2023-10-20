@@ -32,5 +32,5 @@ if __name__ == '__main__':
     chain = init_gischain(llm="gpt4", key=gpt_key) # 可以支持复杂的指令
 
     # 运行用户指令，show=True表示显示工具执行的DAG图
-    output = chain.run(instruction,show=False,multirun=True)
+    output = chain.run(instruction,show=True,multirun=True)
     print(f"最终的运行结果为：{output}")
