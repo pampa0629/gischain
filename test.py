@@ -1,5 +1,7 @@
-import os
+from osgeo import gdal
 
-radius = '50'
-radius = float(radius) # 防止部分llm给出的是字符串
-print(radius)
+tifffile = "data/slope.tif"
+ds = gdal.Open(tifffile)
+if ds is None:
+    print("无法打开输入文件{tifffile}")
+    exit(1)

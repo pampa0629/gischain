@@ -78,3 +78,5 @@ output/area_result.csv
 output/railway_land_area.txt
 output/totalArea.txt
 *.tif
+data/area_result
+em.txt

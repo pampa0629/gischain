@@ -22,7 +22,7 @@ def extractByValues(tifffile:str, min:float, max:float, output:str):
     # 打开输入文件
     ds = gdal.Open(tifffile)
     if ds is None:
-        print("无法打开输入文件")
+        print("无法打开输入文件{tifffile}")
         exit(1)
 
     # 读取栅格数据

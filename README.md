@@ -56,6 +56,11 @@ Q，提示openai没有ChatComletion属性，怎么办？
 A：这是因为openai的版本过低，需要升级到至少0.28.1。先 pip uninstall openai ,再 pip install openai即可。
 
 ## 版本说明
+
+### v0.0.8
+1. DAG图上的任务节点，可随着对应任务的执行结束动态改变颜色
+2. 解决不能重复绘制同名tool的问题
+
 ### v0.0.7
 1. 增加text2sql(内部为codellama)作为大语言模型
 2. 文心一言（ErnieBot4）升级为4.0版本

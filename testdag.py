@@ -8,7 +8,7 @@ text = """
                 "radius": 500
             },
             "output": "data/railway_buffer.shp"
-        },
+        }, 
         {
             "name": "overlay",
             "inputs": {
@@ -60,12 +60,21 @@ text = """
 """
 
 import json
-from gischain.showdag import showdag
-from gischain.runtools import multi_run_tools
+# from gischain.showdag import showdag
+# from gischain.runtools import multi_run_tools
+import gischain.gischain  as gischain
+
+import os
+# 设置禁用文件验证的环境变量
+os.environ['PYDEVD_DISABLE_FILE_VALIDATION'] = '1'
 
 if __name__ == "__main__":
 
     tools = json.loads(text)
-    # showdag(tools)
-    result = multi_run_tools(tools)
+    # for tool in tools:
+    #     # python只支持一个可变参数，这句话把output参数加上
+    #     tool['inputs']['output'] = tool['output'] 
+
+    result = gischain.rundag(tools, show=True, multirun=True)
+
     print(result)

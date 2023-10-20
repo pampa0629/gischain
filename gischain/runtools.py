@@ -1,33 +1,51 @@
+import json
 from tools import define
+from gischain.common import node_color_map, update_kv_dict
+
+
+# 处理一个任务结束时，应该修改的状态值、颜色值，并返回任务执行结果
+def deal_one_task_done(shares, name, G):
+    # 修改状态
+    update_kv_dict(shares, name, {'status':'done', 'color':node_color_map.get(('task', 'done'))})
+    # 修改output的状态
+    outputs = G.successors(name)
+    for output in outputs:
+        update_kv_dict(shares, output, {'status':'ready', 'color':node_color_map.get(('data', 'ready'))})
+
+    # 返回结果；增加判断，防止没有result属性的情况
+    if "result" in shares[name]:
+        return shares[name]["result"]
+    else:
+        return None
 
 # 顺序执行list中的工具
-def run_tools(tools):
-    # 按顺序，真正执行工具
+def run_tools(tools, G=None, shares=None):
+    # 按顺序执行工具list
     result = ""
     for tool in tools:
-        # python只支持一个可变参数，这句话把output参数加上
-        tool['inputs']['output'] = tool['output'] 
-        result_dict = {}
-        result = define.call_tool(tool['name'], result_dict, **tool['inputs'])
-        # print(f"工具 {tool['name']} 的执行结果为：{result}")
+        if G != None and shares != None:
+            task_name = json.dumps(tool) 
+        result = define.call_tool(tool['name'], task_name, shares,tool['output'], **tool['inputs'])
+        if G != None and shares != None:
+            deal_one_task_done(shares, task_name, G)
+        
     return result
 
-# 判断一个工具是否可以运行，即是否所有的input是否都已经ready
-def task_is_ready(G, node):
-    inputs = G.predecessors(node)
-    ready = True
-    for input in inputs:
-        # print(input)
-        # print(G.nodes[input])
-        if G.nodes[input]["status"] != "ready":
-            ready = False
-            break
-    return ready
+# ====================================================================================================
 
 # 判断所有的工具是否都已经运行完毕
-def all_tasks_is_done(G):
-    for node in G.nodes:
-        if G.nodes[node]["type"] == "task" and G.nodes[node]["status"] != "done":
+def is_all_tasks_done(shares):
+    for node_data in shares.values():
+        # 对于task节点，如果没有状态属性，或者状态不是 'done'，将标志变量设置为 False
+        if node_data['type'] == 'task' and ('status' not in node_data or node_data['status'] != 'done'):
+            return False
+    return True
+
+# 判断一个工具是否可以运行，即是否所有的input是否都已经ready
+def task_is_ready(G,shares,name):
+    inputs = G.predecessors(name)
+    for input in inputs:
+        if shares[input]["status"] != "ready":
             return False
     return True
 
@@ -39,52 +57,29 @@ def find_tool(tools, name):
     return None
 
 # 并行执行list中的工具
-def multi_run_tools(tools):
-
-    from gischain.showdag import buildGaphic 
+def multi_run_tools(tools, G, shares):
     import networkx as nx
     import multiprocessing
-
-    # 创建一个有向图
-    G = nx.DiGraph()
-    buildGaphic(G, tools)
     
-    # 创建一个共享变量，用于从子进程中获取结果
-    manager = multiprocessing.Manager() 
-    result_dict = manager.dict()
-
     result = ""
     # 如果不是所有任务完成，则继续循环
-    while all_tasks_is_done(G) != True:
+    while is_all_tasks_done(shares) != True:
         childs = []
-        for node in G.nodes:
-            # 如果这个node是task，且状态是todo，且所有的input都已经ready，则可以运行
-            if G.nodes[node]["type"] == "task" and G.nodes[node]["status"] == "todo" and task_is_ready(G, node) == True:
-                G.nodes[node]["status"] = "doing"
-                tool = find_tool(tools, node)
-                # python只支持一个可变参数，这句话把output参数加上
-                tool['inputs']['output'] = tool['output'] 
+        for name, data in shares.items():
+            # 如果这个node是task，且状态是 todo，且所有的input都已经ready，则可以运行
+            if data["type"] == "task" and data["status"] == "todo" and task_is_ready(G,shares,name) == True:
+                update_kv_dict(shares, name, {'status':'doing', 'color':node_color_map.get(('task', 'doing'))})
+                
+                # 从shares的task名字中，恢复tool的信息
+                tool = json.loads(name)
                 # 启动子进程
-                child_process = multiprocessing.Process(target=define.call_tool, args=(node,result_dict), kwargs=tool['inputs'])
+                child_process = multiprocessing.Process(target=define.call_tool, args=(tool["name"], name, shares,tool['output']), kwargs=tool['inputs'])
                 child_process.start()
-                childs.append((node,child_process))
-        # print("result_dict:")
-        # print(result_dict)
-        for node, child_process in childs:
+                childs.append((name, child_process))
+
+        for name, child_process in childs:
             # 等待子进程结束
             child_process.join()
-            # 修改状态
-            G.nodes[node]["status"] = "done"
-            # 修改output的状态
-            outputs = G.successors(node)
-            for output in outputs:
-                G.nodes[output]["status"] = "ready"
-            # print(node)
-            # print(result_dict)
-            result = result_dict[node]
-            # print(f"工具 {node} 的执行结果为：{result}")
-            # print(f"工具 {node} 运行完毕")
+            result = deal_one_task_done(shares, name, G)
 
-    # 不要忘记最后显式关闭Manager对象
-    manager.shutdown()
     return result

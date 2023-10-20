@@ -15,17 +15,22 @@ tools_mapping = {
     # "calculateArea": calculateArea,
 }
 
-def call_tool(name, result_dict, **kwargs):
-    if name in tools_mapping:
-        func = tools_mapping[name]["func"]
-        print(f"开始运行工具 {name} ，参数为：{kwargs}")
+from gischain import common
+
+def call_tool(tool_name, node_name, result_dict, output, **kwargs):
+    if tool_name in tools_mapping:
+        func = tools_mapping[tool_name]["func"]
+        print(f"开始运行工具 {tool_name} ，参数为：{kwargs}")
+        # python只支持一个可变参数，这句话把output参数加上
+        kwargs["output"] = output
         result = func(**kwargs)
-        result_dict[name] = result
-        print(f"工具 {name} 执行结束，输出为：{result}")
-        # print(result_dict)
+        if result_dict != None:        
+            common.update_kv_dict(result_dict, node_name, {"result":result})
+            
+        print(f"工具 {tool_name} 执行结束，输出为：{result}")
         return result
     else:
-        print(f"没有找到名字为 {name} 的工具")
+        print(f"没有找到名字为 {tool_name} 的工具")
         return None
 
 import multiprocessing

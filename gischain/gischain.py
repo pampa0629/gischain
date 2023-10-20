@@ -1,6 +1,7 @@
 from tools import define
 from llm.init_llm import init_llm 
-from gischain.showdag import showdag
+import gischain.common as common
+import gischain.showdag as sd
 
 def init_gischain(llm="chatglm", key=None, tools=None):
     return GISChain(llm, key, tools)
@@ -28,24 +29,8 @@ class GISChain:
     # 运行用户指令
     def run(self, instruction, show=True, multirun=False):
         tools = self.run_llm(instruction)
-        
-        if show:
-            import multiprocessing
-            child_process = multiprocessing.Process(target=showdag, args=(tools,))
-            # 启动子进程
-            child_process.start()
-
-        import gischain.runtools as runtools
-        if multirun: # 多进程并行执行
-            result = runtools.multi_run_tools(tools)
-        else: # 单进程顺序执行
-            result = runtools.run_tools(tools)
-        
-        # 等待showdag的子进程结束
-        if show:
-            child_process.join()
-        return result
-
+        return rundag(tools, show, multirun)
+    
     # 运行大语言模型，得到要执行的工具列表
     def run_llm(self, instruction):
         # 构造提示词
@@ -58,3 +43,28 @@ class GISChain:
         print('\n'.join(toolstr))
         return tools
         
+# 运行工具列表
+def rundag(tools, show=True, multirun=False):
+    # 要显示dag图或者多进程并行执行，需要先构造dag图
+    if show or multirun:
+        G, shares = common.buildGaphic(tools)
+        
+    if show:
+        import multiprocessing
+        child_process = multiprocessing.Process(target=sd.showdag, args=(G,shares,))
+        # 启动子进程
+        child_process.start()
+
+    import gischain.runtools as runtools
+    
+    if multirun: # 多进程并行执行
+        result = runtools.multi_run_tools(tools,G,shares)
+    elif show : # 如果显示dag图，那么也要在执行过程中更新shares中的node状态
+        result = runtools.run_tools(tools,G,shares)
+    else:
+        result = runtools.run_tools(tools)
+    
+    # 等待showdag的子进程结束
+    if show:
+        child_process.join()
+    return result
