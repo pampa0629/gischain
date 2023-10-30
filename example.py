@@ -28,8 +28,8 @@ if __name__ == '__main__':
     
     # 构造gischain，支持多种llm，基本都需要给出key
     # chain = init_gischain(llm="chatglm", key=glm_key) # 可以支持简单的指令
-    # chain = init_gischain(llm="qwen-turbo", key=qwen_key) # 可以支持简单的指令
-    chain = init_gischain(llm="ErnieBot4", key={"ak":wenxin_ak,"sk":wenxin_sk} ) # 可以支持简单的指令
+    chain = init_gischain(llm="qwen-turbo", key=qwen_key) # 可以支持简单的指令
+    # chain = init_gischain(llm="ErnieBot4", key={"ak":wenxin_ak,"sk":wenxin_sk} ) # 可以支持简单的指令
     # chain = init_gischain(llm="text2sql", key=text2sql_key) # 可以支持简单的指令
     # chain = init_gischain(llm="gpt3.5", key=gpt_key) # 可以支持第三档复杂的指令
     # chain = init_gischain(llm="gpt4", key=gpt_key) # 可以支持第三档复杂的指令

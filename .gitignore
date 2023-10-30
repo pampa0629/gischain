@@ -80,3 +80,4 @@ output/totalArea.txt
 *.tif
 data/area_result
 em.txt
+*.txt
