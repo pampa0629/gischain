@@ -23,8 +23,8 @@ if __name__ == '__main__':
 
     # 用自然语言描述的指令，目前还需要给出数据文件名字
     # instruction = "修一条铁路，宽度为50米，需要计算占用周边的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp。"
-    # instruction = "修一条铁路，宽度为30米，需要计算占用周边坡度小于15度的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp，地形数据是terrain.tif。"
-    instruction = "修一条铁路，宽度为50米，需要计算占用周边坡度小于10度、海拔小于100米的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp，地形数据是terrain.tif。"
+    instruction = "修一条铁路，宽度为30米，需要计算占用周边坡度小于15度的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp，地形数据是terrain.tif。"
+    # instruction = "修一条铁路，宽度为50米，需要计算占用周边坡度小于10度、海拔小于100米的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp，地形数据是terrain.tif。"
     
     # 构造gischain，支持多种llm，基本都需要给出key
     # chain = init_gischain(llm="chatglm", key=glm_key) # 可以支持简单的指令
