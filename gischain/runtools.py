@@ -1,6 +1,6 @@
 import json
 from tools import define
-from gischain.common import node_color_map, update_kv_dict
+from gischain.base import node_color_map, update_kv_dict
 
 
 # 处理一个任务结束时，应该修改的状态值、颜色值，并返回任务执行结果

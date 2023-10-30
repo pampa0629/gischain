@@ -12,6 +12,9 @@ def init_llm(name, key=None):
     elif name == "ErnieBot4":
         from llm import erniebot
         allm = erniebot.ErnieBot()
+    elif name == "gpt3.5":
+        from llm import gpt3_5
+        allm = gpt3_5.GPT3_5()
     elif name == "gpt4":
         from llm import gpt4
         allm = gpt4.GPT4()

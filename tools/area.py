@@ -3,18 +3,38 @@ import os
 from osgeo import gdal
 import numpy as np
 
-disc = """
+desc = """
 {
-	name:calculateArea,
-	description:计算面积；如果输入是矢量面文件，则求所有面的面积和；如果输入是栅格文件，则求所有非nodata像元的面积和
-	inputs:{
-		datafile:要求面积的数据文件
+	"name":"area",
+	"description":"求面积；如果输入是矢量文件，则求所有要素的面积和；如果输入是栅格文件，则求所有非nodata像元的面积和",
+	"inputs":{
+		"datafile":"要求面积的数据文件"
     },
-    output:面积结果
+    "output":"面积结果"
 }
 """
 
-def calculateArea(datafile:str, output=None) -> float:
+example = """
+指令：计算土地的面积；土地数据是 land.shp。
+json: [{
+	"name":"area",
+	"inputs":{
+		"datafile":"land.shp",
+	},
+    "output":"area_result.json"
+}]
+
+指令：计算海拔在200米以下的面积；地形数据是 terrain.tif 。
+json: [{
+	"name":"area",
+	"inputs":{
+		"datafile":"terrain.tif",
+	},
+    "output":"area_result.json"
+}]
+"""
+
+def area(datafile:str, output=None) -> float:
     _, ext = os.path.splitext(datafile)
     if ext == ".tif" or ext == ".tiff":
         result = calculateAreaFromRaster(datafile)

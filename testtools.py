@@ -3,10 +3,10 @@ from tools.buffer import buffer
 from tools.overlay import overlay
 from tools.slope import slope
 from tools.extractByValues import extractByValues
-from tools.extractByMask import extractByMask
-from tools.rasterOverlay import rasterOverlay
-from tools.polygon2mask import polygon2mask
-from tools.calculateArea import calculateArea
+# from tools.extractByMask import extractByMask
+# from tools.rasterOverlay import rasterOverlay
+# from tools.polygon2mask import polygon2mask
+from tools.area import area
 
 # buffer("./data/railway.shp", 5000, "./data/buffer_railway.shp")
 # overlay("./data/buffer_railway.shp", "./data/land.shp", "./data/overlay_buffer_land.shp")
@@ -22,4 +22,4 @@ from tools.calculateArea import calculateArea
 
 # extractByMask("./data/overlay_slope_terrain.tif","./data/overlay_buffer_land.shp", "./data/result_land.tif")
 
-print(calculateArea("./data/result_land.tif"))
+print(area("./data/result_land.tif"))

@@ -1,15 +1,19 @@
 from osgeo import gdal, ogr, osr
 
-disc = """
+desc = """
 {
-	name:contourPolygon,
-	description:从栅格tiff文件中提取等值面,
-	inputs:{
-		datafile:要提取的栅格tiff文件,
-		value:等值面的值
+	"name":"contourPolygon",
+	"description":"从栅格tiff文件中提取等值面",
+	"inputs":{
+		"datafile":"要提取的栅格tiff文件",
+		"value":"等值面的值"
 	},
-    output:等值面结果shp文件
+    "output":"等值面结果shp文件"
 }
+"""
+
+example = """
+
 """
 
 # 当前的实现有问题，不能很好的解决从等值线到等值面的封闭问题

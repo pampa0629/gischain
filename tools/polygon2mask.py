@@ -1,16 +1,19 @@
 from osgeo import gdal, ogr
 import numpy as np
 
-disc = """
+desc = """
 {
-	name:polygon2mask,
-	description:把polygon转换为mask，在polygon之内的像元值为1，之外的像元值为no data; 要生成的栅格文件的分辨率、坐标系等信息，拷贝输入的tiff文件的信息,
-	inputs:{
-		shpfile:要进行栅格转换的矢量多边形文件,
-		tiffile:作为模板的栅格文件
+	"name":"polygon2mask",
+	"description":"把polygon转换为栅格数据，在polygon之内的像元值为1，之外的像元值为no data; 要生成的栅格文件的分辨率、坐标系等信息，拷贝输入的tiff文件的信息",
+	"inputs":{
+		"shpfile":"要进行栅格转换的矢量多边形文件",
+		"tiffile":"作为模板的栅格文件"
 	},
-    output:生成的mask栅格文件
+    "output":"生成的mask栅格文件"
 }
+"""
+example = """
+
 """
 
 def polygon2mask(shpfile:str, tiffile:str, output:str):

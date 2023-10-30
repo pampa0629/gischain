@@ -13,24 +13,27 @@ qwen_key = "sk-f966cb8bbf914ec0b3dd3c1f771177fc"
 wenxin_ak = "Gev6k0qO9OPatIHCu41iCKAS"
 wenxin_sk = "M6GqjYAVygDm7Fqee1ENZQ9KEpk4a8Qh"    
 # text2sql的key
-text2sql_key = "MjBlODExNTQ5ZjVlYWFjMGM3NTQ1Y2RkMzJlNTBjNDYwZDc2ODM3OA=="
-# gpt4的key，通过 https://console.closeai-asia.com/ 获取
+text2sql_key = "=="
+
+# gpt的key，通过 https://console.closeai-asia.com/ 获取
 gpt_key = 'sk-ohe7INluTagKkdGRXP2QGs14n0rhL7sKs5BMEJT41e0Ezwzm'
 
 # 因为内部用了多进程，所以需要在main函数中调用
 if __name__ == '__main__':
 
-    # 用自然语言描述的指令，目前还需要带上数据文件的路径
-    instruction = "修一条铁路，宽度为50米，需要计算占用周边的耕地面积。铁路数据是railway.shp，耕地数据是land.shp。"
-    # instruction = "修一条铁路，宽度为50米，需要计算占用周边坡度小于10度的耕地面积。铁路是railway.shp，耕地是land.shp，地形数据是terrain.tif。"
-
+    # 用自然语言描述的指令，目前还需要给出数据文件名字
+    # instruction = "修一条铁路，宽度为50米，需要计算占用周边的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp。"
+    # instruction = "修一条铁路，宽度为30米，需要计算占用周边坡度小于15度的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp，地形数据是terrain.tif。"
+    instruction = "修一条铁路，宽度为50米，需要计算占用周边坡度小于10度、海拔小于100米的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp，地形数据是terrain.tif。"
+    
     # 构造gischain，支持多种llm，基本都需要给出key
     # chain = init_gischain(llm="chatglm", key=glm_key) # 可以支持简单的指令
-    # chain = init_gischain(llm="qwen-turbo", key=qwen_key) # 简单的都会出错
-    # chain = init_gischain(llm="ErnieBot4", key={"ak":wenxin_ak,"sk":wenxin_sk} ) # 可以支持简单的指令
-    # chain = init_gischain(llm="text2sql", key=text2sql_key) # 简单的都会出错
-    chain = init_gischain(llm="gpt4", key=gpt_key) # 可以支持复杂的指令
+    # chain = init_gischain(llm="qwen-turbo", key=qwen_key) # 可以支持简单的指令
+    chain = init_gischain(llm="ErnieBot4", key={"ak":wenxin_ak,"sk":wenxin_sk} ) # 可以支持简单的指令
+    # chain = init_gischain(llm="text2sql", key=text2sql_key) # 可以支持简单的指令
+    # chain = init_gischain(llm="gpt3.5", key=gpt_key) # 可以支持第三档复杂的指令
+    # chain = init_gischain(llm="gpt4", key=gpt_key) # 可以支持第三档复杂的指令
 
     # 运行用户指令，show=True表示显示工具执行的DAG图
-    output = chain.run(instruction,show=False,multirun=True)
+    output = chain.run(instruction,show=True,multirun=False)
     print(f"最终的运行结果为：{output}")

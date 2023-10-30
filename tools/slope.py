@@ -1,20 +1,31 @@
 from osgeo import gdal
 from osgeo import gdalconst
 
-disc = """
+desc = """
 {
-    name:slope,
-    description:根据地形数据计算坡度,
-    inputs:{
-        tifffile:栅格地形tiff文件
+    "name":"slope",
+    "description":"根据地形数据计算坡度",
+    "inputs":{
+        "tiffile":"栅格地形tiff文件"
     },
-    output:坡度计算结果的栅格tiff文件
+    "output":"坡度计算结果的栅格tiff文件"
 }
 """
 
-def slope(tifffile:str, output:str):
+example = """
+指令：需要获取坡度数据，地形数据是 terrain.tif。
+json: [{
+	"name":"slope",
+	"inputs":{
+		"tiffile":"terrain.tif"
+	},
+    "output":"slope.tif"
+}]
+"""
+
+def slope(tiffile:str, output:str):
     # 打开DEM文件
-    dem = gdal.Open(tifffile, gdalconst.GA_ReadOnly)
+    dem = gdal.Open(tiffile, gdalconst.GA_ReadOnly)
     if dem is None:
         print("Failed to open the DEM file.")
         return None

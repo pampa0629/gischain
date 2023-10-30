@@ -1,28 +1,52 @@
 from osgeo import gdal
 import numpy as np
 
-disc = """
+desc = """
 {
-    name:extractByValues,
-    description:根据最大最小值提取栅格数据，对最大最小值范围之外的像元赋值为NoData,
-    inputs:{
-        tifffile:被提取的栅格tiff文件,
-        min:最小值,
-        max:最大值
+    "name":"extractByValues",
+    "description":"根据给定的最小最大值提取栅格数据，对最小最大值范围之外的像元赋值为NoData",
+    "inputs":{
+        "tiffile":"被提取的栅格tiff文件",
+        "min":"最小值",
+        "max":"最大值"
     },
-    output:提取后的栅格tiff文件
+    "output":"提取后的栅格tiff文件"
 }
 """
 
-def extractByValues(tifffile:str, min:float, max:float, output:str):
+example = """
+指令：需要获取海拔在200米以下的范围，地形数据是 terrain.tif。
+json: [{
+	"name":"extractByValues",
+	"inputs":{
+		"tiffile":"terrain.tif",
+        "min":0,
+        "max":200
+	},
+    "output":"terrain_0_200.tif"
+}]
+
+指令：需要获取坡度在10-20度之间的范围，坡度数据是 slope.tif。
+json: [{
+	"name":"extractByValues",
+	"inputs":{
+		"tiffile":"slope.tif",
+        "min":10,
+        "max":20
+	},
+    "output":"slope_10_20.tif"
+}]
+"""
+
+def extractByValues(tiffile:str, min:float, max:float, output:str):
     # 防止部分llm给出的是字符串
     min = float(min) 
     max = float(max) 
 
     # 打开输入文件
-    ds = gdal.Open(tifffile)
+    ds = gdal.Open(tiffile)
     if ds is None:
-        print("无法打开输入文件{tifffile}")
+        print("无法打开输入文件{tiffile}")
         exit(1)
 
     # 读取栅格数据

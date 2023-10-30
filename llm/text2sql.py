@@ -1,19 +1,27 @@
 import requests
 import json
 from .llm import Llm
+# from .prompt_en import prompt
+# from .prompt_en import example1_desc, example1_json, example2_desc, example2_json
 
 prompt = """
-你现在是一个GIS领域专家和人工智能助手，现在要做一个gis领域的空间分析功能。
-你需要遵从指令完成特定的任务，从下面工具集中选择合适的工具(不要选用不上的工具)。
-工具集如下：
-==========
+You are now an expert in the GIS field and an AI assistant. 
+Your task is to perform a spatial analysis function in the GIS domain. 
+You must follow instructions to complete a specific task, selecting the appropriate tools from the toolset provided (do not use unnecessary tools).
+
+The toolset is as follows:
 {tools}
-==========
-指令：{instruction}
-指令要求比较复杂，请认真全面思考后给出解答。
-并用JSON格式顺序列出对应的工具，请给出对应的输入信息；
-输入数据放在data目录下，中间生成的文件放在temp目录下，最终结果放在output目录下，记得组合出正确的相对文件路径。
-由于要对接程序自动运行，除了JSON格式之外，绝对、绝对、绝对不要有多余的文字输出，任何多余的文字都是干扰项。
+
+{examples}
+
+Instructions: {instruction}
+
+The instructions are quite complex, so please carefully consider all aspects before providing a solution. 
+List the corresponding tools in JSON format and include the input information.
+Input data should be located in the 'data' directory, intermediate files in the 'data/temp' directory, and the final results in the 'data/output' directory. 
+Ensure that you construct the correct relative file paths.
+Since this needs to integrate with a program for automated execution, there should be absolutely no extra textual output beyond the JSON format. 
+Any extra text is considered noise.
 """
 
 import requests
@@ -22,8 +30,9 @@ class Text2SQL(Llm):
     def set_api_key(self, key):
         self.key = key
 
-    def build_prompt(self, instruction, tools):
-        text  = prompt.format(instruction=instruction,tools=tools)
+    def build_prompt(self, instruction, tools, examples):
+        examples = f"The examples of toolset are as follows:\n{examples}"
+        text  = prompt.format(instruction=instruction, tools=tools, examples="")
         print(f"输入给大语言模型的内容如下:{text}")
         return text
 
@@ -42,7 +51,7 @@ class Text2SQL(Llm):
                 }
             ],
             "max_tokens": 2048,
-            "temperature": 0
+            "temperature": 0.01
         }
 
         response = requests.post(url, headers=headers, json=data)
@@ -50,18 +59,9 @@ class Text2SQL(Llm):
         # 检查HTTP响应状态码
         if response.status_code == 200:
             content = response.json()["choices"][0]["message"]["content"]
-            content = extract_content(content)
-            # 去掉[]外面的内容，再构建json list
-            tools_str = "[" + content + "]"
-            tool_list = json.loads(tools_str)
-            return tool_list
+            from .base import predeal
+            return predeal(content)
         else:
             print("text2sql请求失败，状态码:", response.status_code)
             return None
             
-
-# 去掉字符串中的前后[]，再构建json list
-def extract_content(string):
-    index_left = string.find('[')
-    index_right = string.find(']')
-    return string[index_left+1:index_right]

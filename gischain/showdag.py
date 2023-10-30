@@ -19,6 +19,8 @@ def draw_network_with_arrows(G, pos):
         # 此行确保箭头与图的边界不会被裁剪
         plt.plot()
 
+import os
+
 # 按照一定频率刷新页面
 def refresh(frame, G, pos, shares):
     # 提取不同类型的节点
@@ -34,7 +36,7 @@ def refresh(frame, G, pos, shares):
     nx.draw_networkx_nodes(G, pos, nodelist=task_nodes, node_shape="h",
                         node_color=task_colors, node_size=4000)  # 六边形表示task
 
-    node_labels = {node: G.nodes[node]["lable"] for node in G.nodes}
+    node_labels = {node: os.path.basename(str(G.nodes[node]["lable"])) for node in G.nodes}
     nx.draw_networkx_labels(G, pos, labels=node_labels)
 
     # 定义箭头样式
@@ -49,6 +51,6 @@ def showdag(G, shares):
     # seed 1 6 7 10
     pos = nx.spring_layout(G, k=0.5, iterations=200, seed=7, scale=2.0, center=(0, 0))
     refresh(None, G, pos, shares)
-    anim = FuncAnimation(fig, refresh, fargs=(G,pos, shares,), frames=10000, repeat=False, interval=500)
+    anim = FuncAnimation(fig, refresh, fargs=(G,pos, shares,), frames=100, repeat=False, interval=1000)
     plt.show()
     

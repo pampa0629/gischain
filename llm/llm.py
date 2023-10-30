@@ -3,13 +3,14 @@
 # build_prompt(instruction, tools)：构造提示词
 # invoke(prompt)：调用大语言模型，返回工具集列表
 class Llm:
-    # def __init__(self):
-    #     pass
+    def __init__(self):
+        # 每个LLM可以自行设定能给tools内容输入的token长度，默认为4096
+        self.tool_token_len = 4096 
 
     def set_api_key(self, key):
         pass
 
-    def build_prompt(self, instruction, tools):
+    def build_prompt(self, instruction, tools, examples):
         pass
 
     def invoke(self, text):
