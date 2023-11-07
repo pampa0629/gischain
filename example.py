@@ -1,6 +1,6 @@
 import os
-# 这里修改为 config.ini 并把 config.ini 文件中的key值改为自己的key
-os.environ["config_file"] = "myconfig.ini"
+# 这里要 config.ini 文件中的key值改为自己的key
+os.environ["config_file"] = "config.ini"
 
 from gischain.gischain import init_gischain
 
