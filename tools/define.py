@@ -3,7 +3,7 @@ import json
 
 g_tools_mapping = {
 #     "buffer": {"func":buffer,
-#               "desc":“{
+#                "desc":“{
 #                         name:buffer,
 #                         description:得到缓冲区,
 #                         inputs:{
@@ -12,7 +12,9 @@ g_tools_mapping = {
 #                             },
 #                         output:缓冲区结果文件
 #                     }”,
-#               "example":“{}
+#                "example":“{},
+#                "check":check, # 增加对工具json的检查
+#               },
 #     "overlay": {},
 #     "area": {},
 }
@@ -43,16 +45,23 @@ import multiprocessing
 def is_main_process():
     return multiprocessing.current_process().name == "MainProcess"
 
-def add_tool(name, func, desc, example=None):
+def add_tool(name, func, desc, example=None, check=None):
     g_tools_mapping[name] = {}
     g_tools_mapping[name]["func"] = func
-    g_tools_mapping[name]["desc"] = desc
+    g_tools_mapping[name]["desc"] = desc    
     if example != None:
         g_tools_mapping[name]["example"] = example
+    if check != None:
+        g_tools_mapping[name]["check"] = check
     # 仅在主进程中输出工具的初始化信息
     if is_main_process():
         print(f"初始化工具 {name} 成功，内容为：{desc}")
 
+# 得到所有工具的名字
+def get_tools_name():
+    return list(g_tools_mapping.keys())
+
+# 根据工具名字，得到工具的描述
 def get_tool_desc(name):
     if name in g_tools_mapping:
         function = g_tools_mapping[name]
@@ -61,6 +70,7 @@ def get_tool_desc(name):
         print(f"没有找到名字为 {name} 的工具")
         return None
     
+# 根据工具名字，得到工具的例子
 def get_tool_example(name):
     if name in g_tools_mapping:
         function = g_tools_mapping[name]
@@ -69,6 +79,17 @@ def get_tool_example(name):
     else:
         print(f"没有找到名字为 {name} 的工具")
     return ""
+
+# 根据工具名字，和工具调用的json，检查工具调用是否正确
+def check_tool(name, tool):
+    if name in g_tools_mapping:
+        function = g_tools_mapping[name]
+        if "check" in function:
+            return function["check"](tool)    
+        return True, "" # 没有check函数，直接返回True    
+    else:
+        print(f"没有找到名字为 {name} 的工具")
+        return False, f"没有在工具集中找到名字为{name}的工具，请必须使用工具集中提供的工具；"
 
 # 根据工具名字，获取单个工具的embedding
 def get_tool_emb(name):
@@ -88,9 +109,6 @@ def get_tools_emb(tools):
         if emb != None:
             result.append(emb)
     return result
-    
-def get_tools_name():
-    return list(g_tools_mapping.keys())
 
 def init_tools_emb():
     from .embedding import load_tools_emb

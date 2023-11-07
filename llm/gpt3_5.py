@@ -12,11 +12,16 @@ class GPT3_5(Llm):
     def build_prompt(self, instruction, tools, examples):
         return build(instruction, tools, examples, True, False)
 
-    def invoke(self, text):
+    def invoke(self, text, tools=None, errors=None):
+        messages=[{"role": "system", "content": "You are a GIS domain expert and a helpful assistant."},
+                      {"role": "user", "content": text}]
+        if tools!=None:
+            messages+=[{'role': 'assistant', 'content': tools}]
+        if errors!=None:
+            messages+=[{'role': 'user', 'content': errors}]
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo", 
-            messages=[{"role": "system", "content": "You are a GIS domain expert and a helpful assistant."},
-                      {"role": "user", "content": text}])
+            messages=messages)
         content = response.choices[0].message.content
         from .base import predeal
         return predeal(content)

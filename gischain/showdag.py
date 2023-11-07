@@ -37,7 +37,7 @@ def refresh(frame, G, pos, shares):
                         node_color=task_colors, node_size=4000)  # 六边形表示task
 
     node_labels = {node: os.path.basename(str(G.nodes[node]["lable"])) for node in G.nodes}
-    nx.draw_networkx_labels(G, pos, labels=node_labels)
+    nx.draw_networkx_labels(G, pos, labels=node_labels, font_family='Arial Unicode MS')
 
     # 定义箭头样式
     draw_network_with_arrows(G, pos)
@@ -47,7 +47,12 @@ from matplotlib.animation import FuncAnimation
 
 def showdag(G, shares):
     fig = plt.figure(figsize=(20,15))
-    # 使用matplotlib进行绘图
+
+    from matplotlib import rcParams
+    # 设置中文字体为默认字体
+    plt.rcParams['font.family'] = 'Arial Unicode MS'
+    plt.title("GISChain执行DAG图")
+
     # seed 1 6 7 10
     pos = nx.spring_layout(G, k=0.5, iterations=200, seed=7, scale=2.0, center=(0, 0))
     refresh(None, G, pos, shares)

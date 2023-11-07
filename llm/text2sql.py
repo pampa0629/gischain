@@ -36,7 +36,13 @@ class Text2SQL(Llm):
         print(f"输入给大语言模型的内容如下:{text}")
         return text
 
-    def invoke(self, text):
+    def invoke(self, text, tools=None, errors=None):
+        messages =  [{"role": "user","content": text}]
+        if tools!=None:
+            messages+=[{'role': 'assistant', 'content': tools}]
+        if errors!=None:
+            messages+=[{'role': 'user', 'content': errors}]
+        
         url = 'http://1229992103460597.cn-shanghai.pai-eas.aliyuncs.com/api/predict/text2sql/v1/chat/completions'
         headers = {
             'Authorization': self.key,
@@ -44,12 +50,7 @@ class Text2SQL(Llm):
         }
         data = {
             "model": "text2sql",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": text
-                }
-            ],
+            "messages": messages,
             "max_tokens": 2048,
             "temperature": 0.01
         }

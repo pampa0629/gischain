@@ -3,11 +3,11 @@
 # 从一对符号中提取内容
 def extract_content(string, left='[', right=']'):
     index_left = string.find(left)
-    index_right = string.find(right)
+    index_right = string.rfind(right)
     return string[index_left+1:index_right]
 
 # 把LLM返回的字符串转换为工具集列表
-def predeal(content:str):
+def predeal(content):
     print(f"大语言模型的返回结果如下：\n{content}")
     content = extract_content(content) # 去掉前后的 []
     tools_str = "[" + content + "]"

@@ -10,14 +10,21 @@ class QWen(Llm):
         dashscope.api_key=key
 
     def build_prompt(self, instruction, tools, examples):
-        return build(instruction, tools, examples, True, False)
+        return build(instruction, tools, examples, False, False)
 
-    def invoke(self, prompt):
+    # 通义千问 api 网址：https://dashscope.console.aliyun.com/apiKey 
+    def invoke(self, prompt, tools=None, errors=None):
+        messages=[{'role': 'system', 'content': '你是GIS领域专家和人工智能助手。'},
+                  {'role': 'user', 'content': prompt}]
+        if tools!=None:
+            messages+=[{'role': 'assistant', 'content': tools}]
+        if errors!=None:
+            messages+=[{'role': 'user', 'content': errors}]
+
         gen = Generation()
         response = gen.call(
-            Generation.Models.qwen_turbo,
-            messages=[{'role': 'system', 'content': '你是GIS领域专家和人工智能助手。'},
-                      {'role': 'user', 'content': prompt}],
+            Generation.Models.qwen_plus, #   qwen_turbo qwen_plus
+            messages=messages,
             temperature=0.01,
             result_format='message',  # set the result to be "message" format.
         )

@@ -1,7 +1,6 @@
 import geopandas as gpd
 
-desc = """
-{
+desc = """{
 	"name":"buffer",
 	"description":"得到缓冲区",
 	"inputs":{
@@ -9,8 +8,7 @@ desc = """
 		"radius":"缓冲区半径"
 	},
     "output":"缓冲区结果文件"
-}
-"""
+}"""
 
 example = """
 指令：修一条铁路，宽度为30米，需要计算铁路占用的面积；铁路数据是railway.shp。
@@ -21,8 +19,7 @@ json: [{
 		"radius":15
 	},
     "output":"railway_buffer.shp"
-}]
-"""
+}]"""
 
 def buffer(datafile:str, radius:float, output:str):
     data = gpd.read_file(datafile)
@@ -31,4 +28,12 @@ def buffer(datafile:str, radius:float, output:str):
     result.to_file(output)
     return output
 
+from . import base
+def check(tool):
+    datafile = tool["inputs"]["datafile"]
+    # 得到数据文件的后缀名
+    if datafile.endswith('.shp') == False:
+       return False, f"{datafile} 现在只支持shp文件；"
+    return True, ""
+    
 

@@ -18,11 +18,16 @@ class ErnieBot(Llm):
         # 文心一言对输入的tokenliang有限制，所以就不再输入工具的范例了
         return build(instruction, tools, "", False, False)
 
-    def invoke(self, text):
-        # ERNIE-Bot-4 
+    def invoke(self, text, tools=None, errors=None):
+        messages =  [{"role": "user","content": text}]
+        if tools!=None:
+            messages+=[{'role': 'assistant', 'content': tools}]
+        if errors!=None:
+            messages+=[{'role': 'user', 'content': errors}]
+
         url = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions_pro?access_token=" + self.token        
         payload = json.dumps({
-            "messages": [{"role": "user","content": text}],
+            "messages": messages,
             "temperature": 0.01 # 降低随机性，使得结果更加稳定
         })
         headers = {

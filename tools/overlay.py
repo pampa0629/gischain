@@ -3,19 +3,15 @@ from osgeo import gdal, ogr
 import numpy as np
 from . import base
 
-desc = """
-{
+desc = """{
 	"name":"overlay",
-	"description":"叠加分析;支持矢量与矢量、矢量与栅格、栅格与栅格的叠加分析;如果两个输入文件都是矢量，则结果为矢量文件；
-        如果两个输入文件一个为栅格、另一个为矢量，则结果为栅格文件（tif格式）；如果两个输入文件都是栅格，则结果也为栅格文件；
-        目前仅支持intersection模式",
+	"description":"叠加分析;支持矢量与矢量、矢量与栅格、栅格与栅格的叠加分析;如果两个输入文件都是矢量，则结果为矢量文件；如果两个输入文件一个为栅格、另一个为矢量，则结果为栅格文件（tif格式）；如果两个输入文件都是栅格，则结果也为栅格文件；目前仅支持intersection模式",
 	"inputs":{
 		"datafile1":"参与叠加分析的数据文件1",
 		"datafile2":"参与叠加分析的数据文件2"
 	},
     "output":"叠加分析结果文件"
-}
-"""
+}"""
 
 example = """
 指令：求海拔100米以下的耕地面积。耕地数据是farmland.shp，地形数据为terrain.tif。
@@ -74,6 +70,15 @@ json:[
     "output":"overlay_slope_terrain.tif"
 }]
 """
+
+def check(tool):
+    datafile1 = tool["inputs"]["datafile1"]
+    datafile2 = tool["inputs"]["datafile2"]
+    # 当两个输入文件有一个是tif时，输出必须是tif文件
+    if datafile1.endswith('.tif') or datafile2.endswith('.tif'):
+        if tool["output"].endswith('.tif') == False:
+            return False, f"对于工具{tool['name']}，当两个输入文件有一个是tif时，输出必须是tif文件；"
+    return True, ""
 
 def overlay(datafile1:str, datafile2:str, output:str):
     if base.isVectorFile(datafile1) and base.isVectorFile(datafile2):
@@ -152,13 +157,13 @@ def rasterOverlay(datafile1:str, datafile2:str, output:str):
     # 打开第一个栅格数据集
     datafile1 = gdal.Open(datafile1)
     if datafile1 is None:
-        print("无法打开 datafile1.tif")
+        print(f"无法打开 {datafile1}")
         exit(1)
 
     # 打开第二个栅格数据集
-    datafile2 = gdal.Open(datafile2)
+    datafile2 = gdal.Open(datafile2) 
     if datafile2 is None:
-        print("无法打开 datafile2.tif")
+        print(f"无法打开 {datafile2}")
         exit(1)
 
     # 获取第一个数据集的波段

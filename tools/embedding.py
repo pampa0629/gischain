@@ -1,26 +1,26 @@
 import numpy as np
 
+# ========  通用向量化工具 ======================== #
+import os
+
 # 通义千问的向量化
 def tongyi_emb(text):
     import dashscope
-    qwen_key = "sk-f966cb8bbf914ec0b3dd3c1f771177fc"
-    dashscope.api_key=qwen_key
+    dashscope.api_key=os.environ.get("qwen_key")
     resp = dashscope.TextEmbedding.call(
         model=dashscope.TextEmbedding.Models.text_embedding_v1,
         input=text)
-    
     return resp["output"]["embeddings"][0]["embedding"]
 
 # openai 的向量化
 def openai_text2em(text):
     import openai
     openai.api_base = 'https://api.closeai-asia.com/v1' # 固定不变
-    gpt_key = 'sk-ohe7INluTagKkdGRXP2QGs14n0rhL7sKs5BMEJT41e0Ezwzm'
-    openai.api_key = gpt_key 
+    openai.api_key = os.environ.get("gpt_key")
     result = openai.Embedding.create(
-    model="text-embedding-ada-002",
-    input=text
-    )
+                    model="text-embedding-ada-002",
+                    input=text
+                )
     emb = result["data"][0]["embedding"] 
     emb = [float(x) for x in emb]
     return emb
@@ -46,13 +46,13 @@ def baidu_em(text):
     return emb
     
 def get_access_token():
-    API_KEY = "Gev6k0qO9OPatIHCu41iCKAS"
-    SECRET_KEY = "M6GqjYAVygDm7Fqee1ENZQ9KEpk4a8Qh"
     url = "https://aip.baidubce.com/oauth/2.0/token"
-    params = {"grant_type": "client_credentials", "client_id": API_KEY, "client_secret": SECRET_KEY}
+    params = {"grant_type": "client_credentials", 
+              "client_id":os.environ.get("wenxin_ak"), 
+              "client_secret": os.environ.get("wenxin_sk") }
     return str(requests.post(url, params=params).json().get("access_token"))
 
-# ======================================================= #
+# ============ 工具的向量化、存储和加载 =========================================== #
 
 # 加载工具的字符串向量值
 def load_tools_emb():
@@ -106,3 +106,26 @@ def sort_tools_by_CI(embs,input):
         emb["CI"] = calc_CI(input,emb["emb"])
     embs = sorted(embs, key=lambda x: x["CI"])
     return embs
+
+# ============  通过向量来选择需要的工具 =========================================== #
+import tools.define as define
+
+# 根据用户指令，通过向量化来选择工具集
+def select_tools(instruction, tools, token_len=4096):
+    from tools import embedding
+    import numpy as np
+    input = np.array(embedding.tongyi_emb(instruction))
+    embs = define.get_tools_emb(tools)
+    sorted_embs = embedding.sort_tools_by_CI(embs, input)
+    descs = examples = ""
+    print("被选择的tool包括: ")
+    tokens = 0
+    for emb in sorted_embs:
+        tool_name = emb["tool"]
+        descs += define.get_tool_desc(tool_name)
+        examples += define.get_tool_example(tool_name)
+        tokens += emb["len"] # 粗略处理
+        print(f"工具：{tool_name},CI:{emb['CI']},字符长度: {emb['len']}")
+        if tokens >= token_len:
+            break
+    return descs,examples

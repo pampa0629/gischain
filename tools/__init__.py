@@ -1,19 +1,32 @@
-from . import area, buffer, define, overlay,slope,extractByValues,polygon2mask,contourPolygon
      
 def module_init():    
-    define.add_tool("area", area.area, area.desc, area.example)
-    define.add_tool("buffer", buffer.buffer, buffer.desc, buffer.example)
-    define.add_tool("slope", slope.slope, slope.desc, slope.example)
-    define.add_tool("overlay", overlay.overlay, overlay.desc, overlay.example)
-    define.add_tool("extractByValues", extractByValues.extractByValues, extractByValues.desc, extractByValues.example)
+    from . import config
+    import os
+    if "config_file" in os.environ:
+        config.load_config(os.environ["config_file"])
+    else:
+        print("没有找到环境变量 config_file，使用默认的配置文件 config.ini")
+        os.environ["config_file"] = "config.ini"
+        config.load_config(os.environ["config_file"])
+
+    from . import define
+    from . import area, buffer, filter, overlay,slope,extractByValues
+    
+    define.add_tool("area", area.area, area.desc, area.example, area.check)
+    define.add_tool("buffer", buffer.buffer, buffer.desc, buffer.example, buffer.check)
+    define.add_tool("filter", filter.filter, filter.desc, filter.example, filter.check)
+    define.add_tool("slope", slope.slope, slope.desc, slope.example, slope.check)
+    define.add_tool("overlay", overlay.overlay, overlay.desc, overlay.example, overlay.check)
+    define.add_tool("extractByValues", extractByValues.extractByValues, extractByValues.desc, extractByValues.example, extractByValues.check)
 
     # 效果不好，暂时封起来
+    # from . import polygon2mask,contourPolygon
     # define.add_tool("polygon2mask", polygon2mask.polygon2mask, polygon2mask.desc, polygon2mask.example)
     # define.add_tool("contourPolygon", contourPolygon.contourPolygon, contourPolygon.desc,contourPolygon.example)
-
+    
     # 初始化 tools 的 embedding
     define.init_tools_emb()
-    
+
 # 在模块加载时自动调用 module_init() 函数
 module_init()
 

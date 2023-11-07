@@ -7,13 +7,18 @@ class ChatGLM(Llm):
         zhipuai.api_key = key
 
     def build_prompt(self, instruction, tools, examples):
-        return build(instruction, tools, examples, True, True)
+        return build(instruction, tools, examples, True, False)
         
-    def invoke(self, text):
+    def invoke(self, text, tools=None, errors=None):
+        prompt=[{'role': 'user', 'content': text}]
+        if tools!=None:
+            prompt+=[{'role': 'assistant', 'content': tools}]
+        if errors!=None:
+            prompt+=[{'role': 'user', 'content': errors}]
+
         response = zhipuai.model_api.invoke(
             model="chatglm_pro", #  chatglm_std  chatglm_pro
-            prompt=[{"role": "user", "content": text}],
-            top_p=0.7,
+            prompt=prompt,
             temperature=0.01,
         )
         content = response['data']['choices'][0]['content']
@@ -32,6 +37,7 @@ def predeal(content:str):
     content = content.replace('\\t', '')
     content = content.strip()
     content = content.strip("\"")
+    content = content.rstrip(",") # 去掉最后一个逗号
     
     tools_str = "[" + content + "]"
     tool_list = json.loads(tools_str)

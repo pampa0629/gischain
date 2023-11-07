@@ -27,14 +27,20 @@ class GPT4(Llm):
 
     def build_prompt(self, instruction, tools, examples):
         examples = f" 工具集的使用范例如下：\n“““\n{examples}\n””” " # gpt4用不着例子也能搞定
-        text  = prompt.format(instruction=instruction,tools=tools, examples="")
+        text  = prompt.format(instruction=instruction,tools=tools, examples=examples)
         print(f"输入给大语言模型的内容如下:{text}")
         return text
 
-    def invoke(self, text):
+    def invoke(self, text, tools=None, errors=None):
+        messages=[{"role": "system", "content": "You are a GIS domain expert and a helpful assistant."},
+                      {"role": "user", "content": text}]
+        if tools!=None:
+            messages+=[{'role': 'assistant', 'content': tools}]
+        if errors!=None:
+            messages+=[{'role': 'user', 'content': errors}]
         response = openai.ChatCompletion.create(
             model="gpt-4", 
-            messages=[{"role": "user", "content": text}])
+            messages=messages)
         content = response.choices[0].message.content
         from .base import predeal
         return predeal(content)

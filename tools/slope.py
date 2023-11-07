@@ -22,6 +22,12 @@ json: [{
     "output":"slope.tif"
 }]
 """
+def check(tool):    
+    inputs = tool["inputs"]
+    for key in inputs:
+        if key != "tiffile":
+            return False, f"对于工具{tool['name']}，输入的参数必须是tiffile，而不能是{key}；"
+    return True, ""
 
 def slope(tiffile:str, output:str):
     # 打开DEM文件

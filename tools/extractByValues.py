@@ -37,6 +37,12 @@ json: [{
     "output":"slope_10_20.tif"
 }]
 """
+def check(tool):
+    tiffile = tool["inputs"]["tiffile"]
+    # 必须是tif文件
+    if not tiffile.endswith(".tif"):
+        return False, f"对于工具{tool['name']}，输入的tiffile参数必须是tif文件，而不能是{tiffile}；"
+    return True, ""
 
 def extractByValues(tiffile:str, min:float, max:float, output:str):
     # 防止部分llm给出的是字符串
@@ -46,7 +52,7 @@ def extractByValues(tiffile:str, min:float, max:float, output:str):
     # 打开输入文件
     ds = gdal.Open(tiffile)
     if ds is None:
-        print("无法打开输入文件{tiffile}")
+        print(f"无法打开输入文件{tiffile}")
         exit(1)
 
     # 读取栅格数据
