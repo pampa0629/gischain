@@ -1,13 +1,14 @@
 import geopandas as gpd
+from . import base
 
 desc = """
 {
-        "name":"filter",
-        "description":"根据条件对要素进行过滤",
-        "inputs":{
-                "datafile":"要过滤的数据文件",
-                "where":"过滤条件"
-        },
+    "name":"filter",
+    "description":"根据输入的条件对要素进行属性过滤，仅支持矢量数据",
+    "inputs":{
+        "datafile":"要过滤的数据文件，仅支持shape文件",
+        "where":"过滤条件，类似于SQL语句中的where子句，例如：land_type=='005'"
+    },
     "output":"过滤后的结果数据"
 }
 """
@@ -23,7 +24,6 @@ json: [{
     "output":"farm_land.shp"
 }]
 """
-import os
 
 def check(tool):
     datafile = tool["inputs"]["datafile"]
@@ -32,17 +32,20 @@ def check(tool):
         return False, f"对于工具{tool['name']}，输入的datafile参数必须是shp文件，而不能是{datafile}；"
     return True, ""
 
-def read_encoding(shapefile):
-    cpgfile_path = shapefile.replace('.shp', '.cpg')
-    if os.path.exists(cpgfile_path):
-        with open(cpgfile_path, 'r') as cpgfile:
-            encoding = cpgfile.read().strip()
-            return encoding
-    return 'utf-8'
+# 处理类似“City IS NOT NULL”的情况
+def deal_no_null(where:str):
+    # result_df = df.query('column_name.notna()')
+    if "IS NOT NULL" in where:
+        where = where.replace("IS NOT NULL", ".notna()")
+        # 去掉中间的空格
+        where = where.replace(" ", "")
+    return where
+
 
 def filter(datafile:str, where:str, output:str):
     gdf = gpd.read_file(datafile)
+    where = deal_no_null(where)
     filtered_gdf = gdf.query(where)
-    filtered_gdf.to_file(output, encoding=read_encoding(datafile))
+    filtered_gdf.to_file(output, encoding=base.read_shp_encoding(datafile))
     return output
 

@@ -10,7 +10,7 @@ class GPT3_5(Llm):
         openai.api_key = key 
 
     def build_prompt(self, instruction, tools, examples):
-        return build(instruction, tools, examples, True, False)
+        return build(instruction, tools, examples, False, False)
 
     def invoke(self, text, tools=None, errors=None):
         messages=[{"role": "system", "content": "You are a GIS domain expert and a helpful assistant."},

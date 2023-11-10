@@ -5,6 +5,8 @@ import gischain.base as base
 import gischain.showdag as sd
 import gischain.check as check
 
+CHECK_COUNT = 10 # 检查的次数
+
 def init_gischain(llm="chatglm", key=None, tools=None):
     return GISChain(llm, key, tools)
 
@@ -36,7 +38,7 @@ class GISChain:
         tools = self.llm.invoke(prompt)
         ok = False # 是否检查通过
         errors = "" # 检查出来的错误信息
-        for i in range(5): # 控制一下，最多只检查若干次，要是仍然不对，则直接退出了
+        for i in range(CHECK_COUNT): # 控制一下，最多只检查若干次，要是仍然不对，则直接退出了
             ok,errors = check.check_tools(tools, instruction)
             if ok:
                 break

@@ -21,6 +21,10 @@ prompt = """
 # https://platform.openai.com/docs/models/gpt-4
 
 class GPT4(Llm):
+    def __init__(self):
+        super().__init__()  # 调用父类的初始化方法
+        # self.tool_token_len = 8192 
+
     def set_api_key(self, key):
         openai.api_base = 'https://api.closeai-asia.com/v1' # 固定不变
         openai.api_key = key 
@@ -39,8 +43,9 @@ class GPT4(Llm):
         if errors!=None:
             messages+=[{'role': 'user', 'content': errors}]
         response = openai.ChatCompletion.create(
-            model="gpt-4", 
-            messages=messages)
+            model="gpt-4-1106-preview", # gpt-4-1106-preview gpt-4
+            messages=messages,
+            temperature=0.01)
         content = response.choices[0].message.content
         from .base import predeal
         return predeal(content)

@@ -6,7 +6,7 @@ from .prompt import build
 class ErnieBot(Llm):
     def __init__(self):
         super().__init__()  # 调用父类的初始化方法
-        self.tool_token_len = 2048 
+        # self.tool_token_len = 4096 
 
     def set_api_key(self, key):
         # 文心一言，需要ak和sk

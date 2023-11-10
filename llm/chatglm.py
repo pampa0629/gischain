@@ -19,7 +19,7 @@ class ChatGLM(Llm):
         response = zhipuai.model_api.invoke(
             model="chatglm_pro", #  chatglm_std  chatglm_pro
             prompt=prompt,
-            temperature=0.01,
+            temperature=0.01
         )
         content = response['data']['choices'][0]['content']
         return predeal(content)

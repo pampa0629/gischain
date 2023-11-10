@@ -7,6 +7,9 @@ from tools.extractByValues import extractByValues
 # from tools.rasterOverlay import rasterOverlay
 # from tools.polygon2mask import polygon2mask
 from tools.area import area
+from tools.rasterStatistics import rasterStatistics
+from tools.groupStatistics import groupStatistics
+from tools.sort import sort
 
 # buffer("./data/railway.shp", 5000, "./data/buffer_railway.shp")
 # overlay("./data/buffer_railway.shp", "./data/land.shp", "./data/overlay_buffer_land.shp")
@@ -22,4 +25,20 @@ from tools.area import area
 
 # extractByMask("./data/overlay_slope_terrain.tif","./data/overlay_buffer_land.shp", "./data/result_land.tif")
 
-print(area("./data/result_land.tif"))
+# print(area("./data/result_land.tif"))
+
+# rasterStatistics("./data/terrain.tif", "./data/farmland.shp", "area", "area_stat", "./data/farmland_stat.shp")
+
+# json: [{
+# 	"name":"groupStatistics",
+# 	"inputs":{
+# 		"datafile":"farmland.shp",
+# 		"infield":"Area",
+#         "mode":"sum",
+#         "groupby":"City",
+#         "outfield":"Area_sum_by_City"
+#     },
+#     "output":"farmland_area_sum.shp"
+# }]
+# groupStatistics("./data/farmland.shp", "SmArea", "sum", "City", "Area_sum_by_City", "./data/farmland_area_sum.csv")
+sort("./data/farmland_area_sum.csv", "Area_sum_by_City", "desc", "./data/farmland_area_sum_sorted.csv")

@@ -54,6 +54,7 @@ def showdag(G, shares):
     plt.title("GISChain执行DAG图")
 
     # seed 1 6 7 10
+    # spring_layout circular_layout shell_layout
     pos = nx.spring_layout(G, k=0.5, iterations=200, seed=7, scale=2.0, center=(0, 0))
     refresh(None, G, pos, shares)
     anim = FuncAnimation(fig, refresh, fargs=(G,pos, shares,), frames=100, repeat=False, interval=1000)

@@ -122,10 +122,11 @@ def select_tools(instruction, tools, token_len=4096):
     tokens = 0
     for emb in sorted_embs:
         tool_name = emb["tool"]
-        descs += define.get_tool_desc(tool_name)
-        examples += define.get_tool_example(tool_name)
-        tokens += emb["len"] # 粗略处理
-        print(f"工具：{tool_name},CI:{emb['CI']},字符长度: {emb['len']}")
-        if tokens >= token_len:
-            break
+        if tokens < token_len: # 限制一下token的长度
+            descs += define.get_tool_desc(tool_name)
+            examples += define.get_tool_example(tool_name)
+            tokens += emb["len"] # 粗略处理
+            print(f"工具：{tool_name}，CI:{emb['CI']},字符长度: {emb['len']}")
+        else:
+            print(f"工具：{tool_name} 没有被选择，CI:{emb['CI']},字符长度: {emb['len']}")
     return descs,examples
