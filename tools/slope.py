@@ -1,6 +1,9 @@
 from osgeo import gdal
 from osgeo import gdalconst
 
+# 启用异常处理
+gdal.UseExceptions()
+
 desc = """
 {
     "name":"slope",

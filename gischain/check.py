@@ -48,10 +48,7 @@ def check_input_file(tools, instruction):
     for tool in tools:
         for key, value in tool['inputs'].items():
             if "file" in key:
-                value = os.path.basename(value)
-                # print(f"检查工具 {tool['name']} 的输入文件 {value}")
-                # print(f"所有的文件包括：{files}")
-                if find_in_list(value,files)==False:
+                if find_in_list(os.path.basename(value),files)==False:
                     return False, f"工具 {tool['name']} 的输入文件 {value} 无法确定来源，不要自己臆造数据文件；"
         files.append(tool['output']) # 把工具的输出也加入到文件列表中
     return True, ""

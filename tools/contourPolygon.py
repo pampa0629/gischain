@@ -1,5 +1,8 @@
 from osgeo import gdal, ogr, osr
 
+# 启用异常处理
+gdal.UseExceptions()
+
 desc = """
 {
 	"name":"contourPolygon",

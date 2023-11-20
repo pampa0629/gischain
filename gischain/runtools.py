@@ -1,7 +1,7 @@
 import json
 from tools import define
 from gischain.base import node_color_map, update_kv_dict
-
+from . import base
 
 # 处理一个任务结束时，应该修改的状态值、颜色值，并返回任务执行结果
 def deal_one_task_done(shares, name, G):
@@ -10,7 +10,8 @@ def deal_one_task_done(shares, name, G):
     # 修改output的状态
     outputs = G.successors(name)
     for output in outputs:
-        update_kv_dict(shares, output, {'status':'ready', 'color':node_color_map.get(('data', 'ready'))})
+        output_name = output.get_name()
+        update_kv_dict(shares, output_name, {'status':'ready', 'color':node_color_map.get(('data', 'ready'))})
 
     # 返回结果；增加判断，防止没有result属性的情况
     if "result" in shares[name]:
@@ -19,25 +20,32 @@ def deal_one_task_done(shares, name, G):
         return None
 
 # 顺序执行list中的工具
-def run_tools(tools, G=None, shares=None):
+def run_tools(tools, shares=None):
     # 按顺序执行工具list
+    if shares != None:
+        from . import base
+        G = base.resotreDAG(shares)
+
     result = ""
     for tool in tools:
-        if G != None and shares != None:
+        task_name = None
+        if shares != None:
             task_name = json.dumps(tool) 
         result = define.call_tool(tool['name'], task_name, shares,tool['output'], **tool['inputs'])
-        if G != None and shares != None:
+        if shares != None:
             deal_one_task_done(shares, task_name, G)
-        
+    
+    if shares != None:
+        shares.update({"title":"GISChain run done."})
     return result
 
 # ====================================================================================================
 
 # 判断所有的工具是否都已经运行完毕
 def is_all_tasks_done(shares):
-    for node_data in shares.values():
+    for key,node_data in shares.items():
         # 对于task节点，如果没有状态属性，或者状态不是 'done'，将标志变量设置为 False
-        if node_data['type'] == 'task' and ('status' not in node_data or node_data['status'] != 'done'):
+        if base.is_node(key,shares) and node_data['type'] == 'task' and ('status' not in node_data or node_data['status'] != 'done'):
             return False
     return True
 
@@ -45,7 +53,8 @@ def is_all_tasks_done(shares):
 def task_is_ready(G,shares,name):
     inputs = G.predecessors(name)
     for input in inputs:
-        if shares[input]["status"] != "ready":
+        input_name = input.get_name()
+        if shares[input_name]["status"] != "ready":
             return False
     return True
 
@@ -57,17 +66,19 @@ def find_tool(tools, name):
     return None
 
 # 并行执行list中的工具
-def multi_run_tools(tools, G, shares):
+def multi_run_tools(tools, shares):
     import networkx as nx
     import multiprocessing
+
+    G = base.resotreDAG(shares)
     
     result = ""
     # 如果不是所有任务完成，则继续循环
     while is_all_tasks_done(shares) != True:
         childs = []
         for name, data in shares.items():
-            # 如果这个node是task，且状态是 todo，且所有的input都已经ready，则可以运行
-            if data["type"] == "task" and data["status"] == "todo" and task_is_ready(G,shares,name) == True:
+            # 1)是node，而非edge；2）是task；3）状态是 todo；4）所有的input都已经ready，则可以运行
+            if base.is_node(name,shares) and data["type"] == "task" and data["status"] == "todo" and task_is_ready(G,shares,name) == True:
                 update_kv_dict(shares, name, {'status':'doing', 'color':node_color_map.get(('task', 'doing'))})
                 
                 # 从shares的task名字中，恢复tool的信息
@@ -82,4 +93,5 @@ def multi_run_tools(tools, G, shares):
             child_process.join()
             result = deal_one_task_done(shares, name, G)
 
+    shares.update({"title":"GISChain Run Done."})
     return result

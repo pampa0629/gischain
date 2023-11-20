@@ -29,7 +29,7 @@ def module_init():
     # define.add_tool("contourPolygon", contourPolygon.contourPolygon, contourPolygon.desc,contourPolygon.example)
     
     # 初始化 tools 的 embedding
-    define.init_tools_emb()
+    # define.init_tools_emb()
 
 # 在模块加载时自动调用 module_init() 函数
 module_init()

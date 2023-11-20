@@ -1,6 +1,9 @@
 from osgeo import gdal
 import numpy as np
 
+# 启用异常处理
+gdal.UseExceptions()
+
 desc = """
 {
     "name":"extractByValues",

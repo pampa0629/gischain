@@ -7,6 +7,8 @@ import json
 # from gischain.showdag import showdag
 # from gischain.runtools import multi_run_tools
 from  gischain.gischain import rundag
+from gischain import base
+from gischain import showdag
 # from ..gischain import run_tools
 
 
@@ -16,14 +18,19 @@ import os
 # 设置禁用文件验证的环境变量
 os.environ['PYDEVD_DISABLE_FILE_VALIDATION'] = '1'
 
+def print_cvs(result):
+    import pandas as pd
+    df = pd.read_csv(result)
+    print(df)
+
 if __name__ == "__main__":
     # original_string = "这是一个包含'单引号'的字符串。"
     # text = text.replace("'", "\"")
     tools = json.loads(text)
-    # for tool in tools:
-    #     # python只支持一个可变参数，这句话把output参数加上
-    #     tool['inputs']['output'] = tool['output'] 
+    
+    # from pprint import pprint
+    # pprint(tools)
 
-    result = rundag(tools, show=True, multirun=False)
+    result = rundag(tools, show=True, multirun=True)
 
-    print(result)
+    # print_cvs(result)

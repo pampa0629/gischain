@@ -3,6 +3,9 @@ from osgeo import gdal, ogr
 import numpy as np
 from . import base
 
+# 启用异常处理
+gdal.UseExceptions()
+
 desc = """{
 	"name":"overlay",
 	"description":"叠加分析;支持矢量与矢量、矢量与栅格、栅格与栅格的叠加分析;如果两个输入文件都是矢量，则结果为矢量文件；如果两个输入文件一个为栅格、另一个为矢量，则结果为栅格文件（tif格式）；如果两个输入文件都是栅格，则结果也为栅格文件；目前仅支持intersection模式",

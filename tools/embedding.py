@@ -112,21 +112,28 @@ import tools.define as define
 
 # 根据用户指令，通过向量化来选择工具集
 def select_tools(instruction, tools, token_len=4096):
-    from tools import embedding
-    import numpy as np
-    input = np.array(embedding.tongyi_emb(instruction))
-    embs = define.get_tools_emb(tools)
-    sorted_embs = embedding.sort_tools_by_CI(embs, input)
+    # 先返回所有的工具和描述
     descs = examples = ""
-    print("被选择的tool包括: ")
-    tokens = 0
-    for emb in sorted_embs:
-        tool_name = emb["tool"]
-        if tokens < token_len: # 限制一下token的长度
-            descs += define.get_tool_desc(tool_name)
-            examples += define.get_tool_example(tool_name)
-            tokens += emb["len"] # 粗略处理
-            print(f"工具：{tool_name}，CI:{emb['CI']},字符长度: {emb['len']}")
-        else:
-            print(f"工具：{tool_name} 没有被选择，CI:{emb['CI']},字符长度: {emb['len']}")
+    for tool in tools:
+        descs += define.get_tool_desc(tool)
+        examples += define.get_tool_example(tool)
     return descs,examples
+
+    # from tools import embedding
+    # import numpy as np
+    # input = np.array(embedding.tongyi_emb(instruction))
+    # embs = define.get_tools_emb(tools)
+    # sorted_embs = embedding.sort_tools_by_CI(embs, input)
+    # descs = examples = ""
+    # print("被选择的tool包括: ")
+    # tokens = 0
+    # for emb in sorted_embs:
+    #     tool_name = emb["tool"]
+    #     if tokens < token_len: # 限制一下token的长度
+    #         descs += define.get_tool_desc(tool_name)
+    #         examples += define.get_tool_example(tool_name)
+    #         tokens += emb["len"] # 粗略处理
+    #         print(f"工具：{tool_name}，CI:{emb['CI']},字符长度: {emb['len']}")
+    #     else:
+    #         print(f"工具：{tool_name} 没有被选择，CI:{emb['CI']},字符长度: {emb['len']}")
+    # return descs,examples

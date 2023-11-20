@@ -3,6 +3,9 @@ import os
 from osgeo import gdal
 import numpy as np
 
+# 启用异常处理
+gdal.UseExceptions()
+
 desc = """{
 	"name":"area",
 	"description":"求面积；如果输入是矢量文件，则求所有要素的面积和；如果输入是栅格文件，则求所有非nodata像元的面积和",

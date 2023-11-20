@@ -63,20 +63,20 @@ class GISChain:
 def rundag(tools, show=True, multirun=False):
     # 要显示dag图或者多进程并行执行，需要先构造dag图
     if show or multirun:
-        G, shares = base.buildGaphic(tools)
+        shares = base.buildShares(tools)
         
     if show: 
         import multiprocessing
-        child_process = multiprocessing.Process(target=sd.showdag, args=(G,shares,))
+        child_process = multiprocessing.Process(target=sd.showdag, args=(shares,))
         # 启动子进程
         child_process.start()
 
     import gischain.runtools as runtools
     
     if multirun: # 多进程并行执行
-        result = runtools.multi_run_tools(tools,G,shares)
+        result = runtools.multi_run_tools(tools,shares)
     elif show : # 如果显示dag图，那么也要在执行过程中更新shares中的node状态
-        result = runtools.run_tools(tools,G,shares)
+        result = runtools.run_tools(tools,shares)
     else:
         result = runtools.run_tools(tools)
     

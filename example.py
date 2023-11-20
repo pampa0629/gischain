@@ -12,13 +12,13 @@ from gischain.gischain import init_gischain
 if __name__ == '__main__':
 
     # 用自然语言描述的指令，目前还需要给出数据文件名字
-    # instruction = "修一条铁路，宽度为50米，需要计算占用周边的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp。" # 260654505.39415726
+    instruction = "修一条铁路，宽度为50米，需要计算占用周边的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp。" # 260654505.39415726
     # instruction = "修一条铁路，宽度为30米，需要计算占用周边坡度小于10度的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp，地形数据是terrain.tif。" # 
     # instruction = "修一条铁路，宽度为50米，需要计算占用周边坡度小于10度、海拔小于100米的耕地面积。铁路数据是railway.shp，耕地数据是farmland.shp，地形数据是terrain.tif。" # 46699805.60523755   
     # instruction = """修一条铁路，宽度为50米，需要计算占用周边坡度小于10度、海拔小于100米、位于“常德市” 城市内的耕地面积。
                     #  铁路数据是railway.shp；耕地数据是farmland.shp,城市字段名为"City"；地形数据是terrain.tif。""" # buffer半径25，面积：4225808.036933649
-    instruction = """修一条铁路，宽度为50米，需要分组统计所占用周边坡度小于10度、海拔小于100米、所属地区的耕地面积，并汇总到所属地区，从大到小的顺序进行排序。
-                     铁路数据是railway.shp；耕地数据是farmland.shp,地区字段名为"City"；地形数据是terrain.tif。"""
+    # instruction = """修一条铁路，宽度为50米，需要分组统计所占用周边坡度小于10度、海拔小于100米、所属地区的耕地面积，并汇总到所属地区，从大到小的顺序进行排序。
+                    #  铁路数据是railway.shp；耕地数据是farmland.shp,地区字段名为"City"；地形数据是terrain.tif。"""
     
     # 构造gischain，支持多种llm，基本都需要给出key
     # chain = init_gischain(llm="chatglm", key=os.environ.get("glm_key")) # 

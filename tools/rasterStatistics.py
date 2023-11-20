@@ -67,30 +67,35 @@ from osgeo import gdal, ogr
 import numpy as np
 from . import base
 
+# 启用异常处理
+gdal.UseExceptions()
+
 def rasterStatistics(tiffile: str, shpfile: str, mode: str, outfield: str, output: str):
     # 忽略gdal的warning
-    gdal.PushErrorHandler('CPLQuietErrorHandler')
+    gdal.PushErrorHandler('CPLQuietErrorHandler') 
     # 处理编码问题
     encoding = base.read_shp_encoding(shpfile)
     gdal.SetConfigOption("GDAL_FILENAME_IS_UTF8", "YES")
     gdal.SetConfigOption("SHAPE_ENCODING", encoding)
 
-    # Open the raster file and get pixel size
+    # 打开栅格文件，并获取像元大小
     raster = gdal.Open(tiffile, gdal.GA_ReadOnly)
-    band = raster.GetRasterBand(1)
     geotransform = raster.GetGeoTransform()
     pixel_size_x = geotransform[1]
     pixel_size_y = -geotransform[5]  # 考虑到y方向的像素大小为负值
     one_pixel_area = pixel_size_x * pixel_size_y
+    inputArray = np.array(raster.GetRasterBand(1).ReadAsArray()).flatten()
+    nodata = raster.GetRasterBand(1).GetNoDataValue()
     
-    # Open the shapefile
+    # 打开shapefile文件
     shp = ogr.Open(shpfile) 
     layer = shp.GetLayer()
 
-    # Create a new field in the shapefile
+    # 复制图层，创建输出文件，并增加栅格化的结果字段
     output_driver = ogr.GetDriverByName("ESRI Shapefile")
     output_dataset = output_driver.CreateDataSource(output)
     output_layer = output_dataset.CopyLayer(layer, layer.GetName())
+    print(outfield)
     output_layer.CreateField(ogr.FieldDefn(outfield, ogr.OFTReal))
     # 在 field 中先写入对象的id，用来做后续栅格化的burn_value
     ids = []
@@ -100,21 +105,30 @@ def rasterStatistics(tiffile: str, shpfile: str, mode: str, outfield: str, outpu
         feature.SetField(outfield, id)
         output_layer.SetFeature(feature)
 
-    # Create a memory raster to rasterize the shpaefile
+    # 创建内存栅格，默认值为0
     memdrv = gdal.GetDriverByName('MEM')
     memraster = memdrv.Create('', raster.RasterXSize, raster.RasterYSize, 1, gdal.GDT_UInt32)
     memraster.SetProjection(raster.GetProjection())
-    memraster.SetGeoTransform(raster.GetGeoTransform())
+    memraster.SetGeoTransform(raster.GetGeoTransform())    
     memraster.GetRasterBand(1).Fill(0)
+    raster = None
 
-    # Rasterize the shapefile layer to the memory raster
+    # 核心代码：把矢量面要素栅格化，栅格值为矢量面要素的id；
+    # ALL_TOUCHED=False：只有那些被几何体中心点包含在内的栅格单元才会被考虑，而不考虑边界相交的情况。
     options=[f"attribute={outfield}", "ALL_TOUCHED=False"]
     gdal.RasterizeLayer(memraster, [1], output_layer, options=options)
+    shp = None
         
     # Read memory raster as array
-    rasterArray = np.array(memraster.GetRasterBand(1).ReadAsArray()).flatten()
+    memArray = np.array(memraster.GetRasterBand(1).ReadAsArray()).flatten()
     memraster = None
-    counts = np.bincount(rasterArray[rasterArray != 0])
+    # 根据inputArray的位置为nodata值，把memArray中对应位置的值设置为0
+    memArray[inputArray == nodata] = 0
+
+    # 根据memArray中的值，统计各个id的个数；
+    # 由于np.bincount统计的是非负整数，而id是从1开始的，所以minlength需要+1
+    counts = np.bincount(memArray[memArray != 0], minlength=len(ids)+1) 
+    # print(len(counts))
     results = counts[ids]
     if mode == "count":
         for index, feature in enumerate(output_layer):
@@ -122,13 +136,14 @@ def rasterStatistics(tiffile: str, shpfile: str, mode: str, outfield: str, outpu
             output_layer.SetFeature(feature)
     elif mode == "area":
         areas = results * one_pixel_area
+        # print(areas)
+        # print(len(areas))
+        # print(len(output_layer))
         for index, feature in enumerate(output_layer):
             feature.SetField(outfield, areas[index])
             output_layer.SetFeature(feature)
         
     output_dataset.SyncToDisk()
     output_dataset = None
-    shp = None
-    raster = None
     base.write_shp_encoding(output, encoding) # 写入编码信息
     return output

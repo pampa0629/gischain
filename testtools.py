@@ -27,7 +27,7 @@ from tools.sort import sort
 
 # print(area("./data/result_land.tif"))
 
-# rasterStatistics("./data/terrain.tif", "./data/farmland.shp", "area", "area_stat", "./data/farmland_stat.shp")
+rasterStatistics("./data/temp/overlay_railway_slope_terrain.tif", "./data/farmland.shp", "area", "area_stat", "./data/farmland_stat.shp")
 
 # json: [{
 # 	"name":"groupStatistics",
@@ -41,4 +41,4 @@ from tools.sort import sort
 #     "output":"farmland_area_sum.shp"
 # }]
 # groupStatistics("./data/farmland.shp", "SmArea", "sum", "City", "Area_sum_by_City", "./data/farmland_area_sum.csv")
-sort("./data/farmland_area_sum.csv", "Area_sum_by_City", "desc", "./data/farmland_area_sum_sorted.csv")
+# sort("./data/farmland_area_sum.csv", "Area_sum_by_City", "desc", "./data/farmland_area_sum_sorted.csv")
