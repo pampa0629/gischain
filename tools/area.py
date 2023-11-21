@@ -8,7 +8,7 @@ gdal.UseExceptions()
 
 desc = """{
 	"name":"area",
-	"description":"求面积；如果输入是矢量文件，则求所有要素的面积和；如果输入是栅格文件，则求所有非nodata像元的面积和",
+	"description":"计算面积；如果输入是矢量文件，则计算所有要素的面积和；如果输入是栅格文件，则计算所有非nodata像元的面积和",
 	"inputs":{
 		"datafile":"要求面积的数据文件"
     },
@@ -50,7 +50,7 @@ def area(datafile:str, output=None) -> float:
     if output != None:
         with open(output, "w") as f:
             f.write(str(result))
-    return result
+    return output
 
 def calculateAreaFromRaster(datafile:str) -> float:
     # 打开TIFF文件

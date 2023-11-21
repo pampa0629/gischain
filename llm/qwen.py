@@ -2,7 +2,7 @@ from http import HTTPStatus
 from dashscope import Generation
 import dashscope
 from .llm import Llm
-from .prompt import build
+from .prompt_template import build
 
 class QWen(Llm):
 

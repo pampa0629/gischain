@@ -4,15 +4,9 @@ text = """
 """
 
 import json
-# from gischain.showdag import showdag
-# from gischain.runtools import multi_run_tools
 from  gischain.gischain import rundag
 from gischain import base
 from gischain import showdag
-# from ..gischain import run_tools
-
-
-# import gischain.gischain  as gischain
 
 import os
 # 设置禁用文件验证的环境变量
@@ -24,13 +18,9 @@ def print_cvs(result):
     print(df)
 
 if __name__ == "__main__":
-    # original_string = "这是一个包含'单引号'的字符串。"
-    # text = text.replace("'", "\"")
     tools = json.loads(text)
-    
+    result = rundag(tools, show=True, multirun=False)
+    # base.print_everything(result)
     # from pprint import pprint
-    # pprint(tools)
-
-    result = rundag(tools, show=True, multirun=True)
-
+    # pprint(result)
     # print_cvs(result)

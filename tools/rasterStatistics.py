@@ -12,28 +12,11 @@ desc = """{
 """
 
 example = """
-指令：求各区县坡度小于10度的面积。区县数据是county.shp，地形数据为terrain.tif。
-json:[
-{
-	"name":"slope",
-	"inputs":{
-		"tiffile":"terrain.tif"
-	},
-    "output":"slope.tif"
-},
-{
-	"name":"extractByValues",
-	"inputs":{
-        "tiffile":"slope.tif",
-        "min":0,
-        "max":10
-	},
-    "output":"slope_0_10.tif"
-},
-{
+指令：求各区县坡度小于10度的面积。区县数据是county.shp，坡度小于10度地形数据为slope_10.tif。
+json:[{
     "name":"rasterStatistics",
     "inputs":{
-        "tiffile":"slope_0_10.tif",
+        "tiffile":"slope_10.tif",
         "shpfile":"county.shp",
         "mode":"area",
         "outfield":"slope_area"

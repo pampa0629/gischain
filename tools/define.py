@@ -1,5 +1,5 @@
-# from tools import buffer,overlay,area
 import json
+from gischain import base
 
 g_tools_mapping = {
 #     "buffer": {"func":buffer,
@@ -18,11 +18,6 @@ g_tools_mapping = {
 #     "overlay": {},
 #     "area": {},
 }
-
-g_tools_emb = []
-# [{"tool": "buffer","emb":[],"len":123},]
-
-from gischain import base
 
 def call_tool(tool_name, node_name, result_dict, output, **kwargs):
     if tool_name in g_tools_mapping:
@@ -90,31 +85,4 @@ def check_tool(name, tool):
     else:
         print(f"没有找到名字为 {name} 的工具")
         return False, f"没有在工具集中找到名字为{name}的工具，请必须使用工具集中提供的工具；"
-
-# 根据工具名字，获取单个工具的embedding
-def get_tool_emb(name):
-    # print("get_tool_emb:",name)
-    # print("g_tools_emb:",len(g_tools_emb))
-    for tool_emb in g_tools_emb:
-        if tool_emb["tool"] == name:
-            return tool_emb
-    print(f"没有找到名字为 {name} 的工具")
-    return None
-
-# 根据tools的名字，获取embedding
-def get_tools_emb(tools):
-    result = []
-    for tool in tools:
-        emb = get_tool_emb(tool)
-        if emb != None:
-            result.append(emb)
-    return result
-
-def init_tools_emb():
-    from .embedding import load_tools_emb
-    tools_emb = load_tools_emb()
-    g_tools_emb.extend(tools_emb)
-    # print("初始化工具的embedding:",len(g_tools_emb))
-    for tool_emb in g_tools_emb:
-        tool_name = tool_emb["tool"]
-        tool_emb["len"] = len(g_tools_mapping[tool_name]["desc"]) + len(g_tools_mapping[tool_name]["example"])
+    

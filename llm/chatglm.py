@@ -1,6 +1,6 @@
 import zhipuai
 from .llm import Llm
-from .prompt import build
+from .prompt_template import build
 
 class ChatGLM(Llm):
     def set_api_key(self, key):

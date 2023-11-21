@@ -1,9 +1,10 @@
 from tools import define
-from tools import embedding
 from llm.init_llm import init_llm 
 import gischain.base as base
-import gischain.showdag as sd
+import gischain.showdag as showdag
 import gischain.check as check
+import gischain.selecttools as select
+import gischain.data as data
 
 CHECK_COUNT = 10 # 检查的次数
 
@@ -32,8 +33,8 @@ class GISChain:
         if len(tools) > 0:
             return rundag(tools, show, multirun)
         
-    # 运行大模型，并检查结果，返回工具列表
-    def run_and_check(self, prompt, instruction):
+    # 调用大模型，并检查结果，返回工具列表
+    def invoke_and_check(self, prompt, instruction):
         # 实际调用大模型，返回工具列表
         tools = self.llm.invoke(prompt)
         ok = False # 是否检查通过
@@ -51,14 +52,19 @@ class GISChain:
 
     # 运行大语言模型，得到要执行的工具列表
     def run_llm(self, instruction):
-        descs,examples = embedding.select_tools(instruction, self.tools, self.llm.tool_token_len)
+        # 通过大模型，根据任务指令，刷选出需要的数据
+        data_descs = data.select_data(self.llm, instruction)
+        instruction = f"{instruction}；数据的json描述为：{data_descs}" # 把数据信息加入到指令中
+        # 通过大模型，初步筛选工具，得到对应的工具描述和示例
+        descs, examples = select.select_tools(self.llm, instruction, self.tools)
         # 构造提示词
         prompt = self.llm.build_prompt(instruction, descs, examples)
-        # 给大模型返回结果，并检查，得到工具列表
-        ok,tools,errors = self.run_and_check(prompt, instruction)
+        # 通过大模型返回工具列表，并检查
+        ok,tools,errors = self.invoke_and_check(prompt, instruction)
+        # 根据检查是否ok，输出工具列表
         return output_result(ok, tools, errors)
-        
-        
+    
+    
 # 运行工具列表
 def rundag(tools, show=True, multirun=False):
     # 要显示dag图或者多进程并行执行，需要先构造dag图
@@ -67,7 +73,7 @@ def rundag(tools, show=True, multirun=False):
         
     if show: 
         import multiprocessing
-        child_process = multiprocessing.Process(target=sd.showdag, args=(shares,))
+        child_process = multiprocessing.Process(target=showdag.show, args=(shares,))
         # 启动子进程
         child_process.start()
 
@@ -80,7 +86,9 @@ def rundag(tools, show=True, multirun=False):
     else:
         result = runtools.run_tools(tools)
     
-    # 等待showdag的子进程结束
+    print("最终的结果为：")
+    base.print_everything(result)
+    # 等待show的子进程结束
     if show:
         child_process.join()
     return result

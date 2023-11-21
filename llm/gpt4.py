@@ -23,7 +23,7 @@ prompt = """
 class GPT4(Llm):
     def __init__(self):
         super().__init__()  # 调用父类的初始化方法
-        # self.tool_token_len = 8192 
+        # self.token_len = 8192 
 
     def set_api_key(self, key):
         openai.api_base = 'https://api.closeai-asia.com/v1' # 固定不变

@@ -4,8 +4,8 @@
 # invoke(prompt)：调用大语言模型，返回工具集列表
 class Llm:
     def __init__(self):
-        # 每个LLM可以自行设定能给tools内容输入的token长度
-        self.tool_token_len = 8192 
+        # 每个LLM可以自行设定内容输入的token长度
+        self.token_len = 8192 
 
     def set_api_key(self, key):
         pass

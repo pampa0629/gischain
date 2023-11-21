@@ -1,6 +1,6 @@
 import openai
 from .llm import Llm
-from .prompt import build
+from .prompt_template import build
 
 # https://platform.openai.com/docs/models/gpt-4
 

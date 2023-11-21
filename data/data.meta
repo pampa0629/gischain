@@ -1,0 +1,17 @@
+{
+    "farmland.shp":{
+        "description":"耕地数据",
+        "fields":{
+            "City":"地区名"
+        }
+    },
+    "railway.shp":{
+        "description":"铁路数据"
+    },
+    "terrain.tif":{
+        "description":"地形数据"
+    },
+    "weather.shp":{
+        "description":"气象数据"
+    }
+}

@@ -4,7 +4,7 @@ from . import base
 desc = """
 {
     "name":"filter",
-    "description":"根据输入的条件对要素进行属性过滤，仅支持矢量数据",
+    "description":"根据输入的条件对要素进行属性过滤，只支持矢量数据，不支持栅格数据和地形数据",
     "inputs":{
         "datafile":"要过滤的数据文件，仅支持shape文件",
         "where":"过滤条件，类似于SQL语句中的where子句，例如：land_type=='005'"

@@ -2,6 +2,40 @@
 import re, os
 import json
 
+# 按照结果类型，以合理的方式打印出来，包括：shapefile, tif, json, txt, csv，数值等
+def print_everything(value):
+    if isinstance(value, str):
+        if os.path.isfile(value):
+            _, ext = os.path.splitext(value)
+            if ext == ".shp":
+                import geopandas as gpd
+                gdf = gpd.read_file(value)
+                print(gdf)
+            elif ext == ".tif" or ext == ".tiff":
+                import rasterio
+                with rasterio.open(value) as src:
+                    print(src.profile)
+            elif ext == ".json":
+                with open(value) as f:
+                    print(json.load(f))
+            elif ext == ".txt" or ext == ".csv":
+                with open(value) as f:
+                    print(f.read())
+            else:
+                print(value)
+        else:
+            print(value)
+    elif isinstance(value, dict):
+        print(json.dumps(value, indent=4, ensure_ascii=False))
+    elif isinstance(value, list):
+        print(json.dumps(value, indent=4, ensure_ascii=False))
+    elif isinstance(value, int) or isinstance(value, float):
+        print(value)
+    elif isinstance(value, tuple):
+        print(value)
+    else:
+        print("不支持的结果类型")
+
 def get_base_filename(filename):
     if is_valid_file_path(filename):
         return os.path.basename(filename)

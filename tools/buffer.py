@@ -11,14 +11,14 @@ desc = """{
 }"""
 
 example = """
-指令：修一条铁路，宽度为30米，需要计算铁路占用的面积；铁路数据是railway.shp。
+指令：要计算加油站附近500米的区域，需要做缓冲区分析。加油站数据是gas_station.shp。
 json: [{
 	"name":"buffer",
 	"inputs":{
-		"datafile":"railway.shp",
-		"radius":15
+		"datafile":"gas_station.shp",
+		"radius":500
 	},
-    "output":"railway_buffer.shp"
+    "output":"gas_station_buffer.shp"
 }]"""
 
 def buffer(datafile:str, radius:float, output:str):

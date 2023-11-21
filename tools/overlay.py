@@ -17,58 +17,23 @@ desc = """{
 }"""
 
 example = """
-指令：求海拔100米以下的耕地面积。耕地数据是farmland.shp，地形数据为terrain.tif。
-json:[
-{
-	"name":"extractByValues",
-	"inputs":{
-        "tiffile":"terrain.tif",
-        "min":0,
-        "max":100
-	},
-    "output":"terrain_0_100.tif"
-},
-{
+指令：求海拔100米以下的耕地面积。耕地数据是farmland.shp，海拔100米以下地形数据为terrain_100.tif。
+json:[{
 	"name":"overlay",
 	"inputs":{
 		"datafile1":"farmland.shp",
-		"datafile2":"terrain_0_100.tif"
+		"datafile2":"terrain_100.tif"
 	},
-    "output":"overlay_farmland_terrain_0_100.tif"
+    "output":"overlay_farmland_terrain_100.tif"
 }]
 
-指令：求坡度在10到20度之间，海拔小于500米的数据。地形数据为terrain.tif。
+指令：求坡度小于10度之间，海拔小于500米的数据。海拔小于500米的地形数据为terrain_500.tif，坡度小于10度的坡度数据为slope_10.tif。
 json:[
-{
-	"name":"slope",
-	"inputs":{
-        "tiffile":"terrain.tif"
-	},
-    "output":"slope.tif"
-},
-{
-	"name":"extractByValues",
-	"inputs":{
-        "tiffile":"terrain.tif",
-        "min":0,
-        "max":500
-	},
-    "output":"terrain_0_500.tif"
-},
-{
-	"name":"extractByValues",
-	"inputs":{
-        "tiffile":"slope.tif",
-        "min":10,
-        "max":20
-	},
-    "output":"slope_10_20.tif"
-},
 {
 	"name":"overlay",
 	"inputs":{
-		"datafile1":"slope_10_20.tif",
-		"datafile2":"terrain_0_500.tif"
+		"datafile1":"slope_20.tif",
+		"datafile2":"terrain_500.tif"
 	},
     "output":"overlay_slope_terrain.tif"
 }]
