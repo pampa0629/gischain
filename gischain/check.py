@@ -40,11 +40,13 @@ def find_in_list(str, list):
     return False
 
 # 检查所有的数据文件输入，在指令中或者前面的工具输出中是否存在
-def check_input_file(tools, instruction):
-    import re, os
-    # 使用正则表达式从 指令中提取文件名信息
-    files = re.findall(r'\b\w+\.\w+\b', instruction)
-    # print(f"instruction中提炼的文件包括：{files}")
+def check_input_file(tools, instruction, data_descs):
+    import os, json
+    # 从 data_descs 中得到 files
+    data = json.loads("["+data_descs+"]")
+    files = [list(item.keys())[0] for item in data]
+    print(f"check中，所有的files为：{files}")
+
     for tool in tools:
         for key, value in tool['inputs'].items():
             if "file" in key:
@@ -54,7 +56,7 @@ def check_input_file(tools, instruction):
     return True, ""
 
 # 根据大模型返回的工具列表，检查是否存在可能的错误。若存在错误，则返回False和检查出来的所有错误信息
-def check_tools(tools, instruction):
+def check_tools(tools, instruction, data_descs):
     errors = ""
     # 用每个工具自己带的check函数检查一遍
     for tool in tools:
@@ -68,7 +70,7 @@ def check_tools(tools, instruction):
         errors += error
 
     # 检查所有的数据文件输入，在指令中或者前面的工具输出中是否存在
-    ok, error = check_input_file(tools, instruction)
+    ok, error = check_input_file(tools, instruction, data_descs)
     if ok == False:
         errors += error
 

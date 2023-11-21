@@ -34,9 +34,10 @@ def predeal(content:str):
     
     content = content.replace('\\n', '')
     content = content.replace('\\"', '\"')
+    content = content.replace('\'', '\"')
     content = content.replace('\\t', '')
     content = content.strip()
-    content = content.strip("\"")
+    # content = content.strip("\"")
     content = content.rstrip(",") # 去掉最后一个逗号
     
     tools_str = "[" + content + "]"

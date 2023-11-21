@@ -34,13 +34,13 @@ class GISChain:
             return rundag(tools, show, multirun)
         
     # 调用大模型，并检查结果，返回工具列表
-    def invoke_and_check(self, prompt, instruction):
+    def invoke_and_check(self, prompt, instruction, data_descs):
         # 实际调用大模型，返回工具列表
         tools = self.llm.invoke(prompt)
         ok = False # 是否检查通过
         errors = "" # 检查出来的错误信息
         for i in range(CHECK_COUNT): # 控制一下，最多只检查若干次，要是仍然不对，则直接退出了
-            ok,errors = check.check_tools(tools, instruction)
+            ok,errors = check.check_tools(tools, instruction, data_descs)
             if ok:
                 break
             # 这里把errors也作为提示词，再次运行
@@ -60,7 +60,7 @@ class GISChain:
         # 构造提示词
         prompt = self.llm.build_prompt(instruction, descs, examples)
         # 通过大模型返回工具列表，并检查
-        ok,tools,errors = self.invoke_and_check(prompt, instruction)
+        ok,tools,errors = self.invoke_and_check(prompt, instruction, data_descs)
         # 根据检查是否ok，输出工具列表
         return output_result(ok, tools, errors)
     
