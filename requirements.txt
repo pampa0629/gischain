@@ -1,5 +1,5 @@
 numpy==1.26.0
-dashscope==1.11.0
+dashscope==1.13.3
 geopandas==0.13.2
 gdal==3.7.2
 zhipuai==1.0.7

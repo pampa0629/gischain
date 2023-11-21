@@ -9,7 +9,7 @@ from .prompt_examples import g_example2_instruction,g_example2_steps,g_example2_
 # is_output_steps: 是否输出步骤，用来控制输出的token的长度
 def build(instruction, tools_descs, tool_examples, is_complex_examples=False,is_output_steps=False):
     if tool_examples != None and tool_examples != "":        
-        tool_examples = f"工具集的使用范例如下：【{tool_examples}】"
+        tool_examples = f"工具集的使用举例如下：“““{tool_examples}”””"
 
     complex_examples = ""
     if is_complex_examples:

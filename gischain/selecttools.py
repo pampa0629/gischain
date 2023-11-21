@@ -14,7 +14,7 @@ def select_tools(llm, instruction, tools):
 
     prompt = f"""你是GIS领域专家，现在要完成用户指定的任务，指令如下：{instruction}。
     请你根据指令，按照概率从大到小，从工具集中选择可能需要的工具，在中括号[]中用双引号列出工具名即可（如:["abc","def"]）。记住：可以多选，不要少选。
-    工具集如下：[{simples}]。"""
+    工具集如下：{simples}。"""
     print(f"用来刷选工具的提示词为：{prompt}")
     # 传给大模型的提示词，包括用户指令，工具名字和描述，返回工具名字的list
     result_tools = llm.invoke(prompt)        

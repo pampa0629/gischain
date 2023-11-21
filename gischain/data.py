@@ -21,10 +21,10 @@ def select_data(llm, instruction):
     prompt = f"""你是GIS领域专家，现在要完成用户指定的任务，指令如下：“{instruction}”。
     请你根据指令，按照概率从大到小，从下面的数据集中选择可能需要的数据，在中括号[]中用双引号列出数据名即可（如:["abc","def"]）。肯定不会被用到的数据不要列出。
     数据集如下：[{meta}]。"""
-    # print(f"用来选择数据的提示词为：{prompt}")
+    print(f"用来选择数据的提示词为：{prompt}")
     # 传给大模型的提示词，包括用户指令，元数据描述，返回数据名字的list
     names = llm.invoke(prompt)      
-    
+
     json_meta = json.loads(meta)  
     # print(f"元数据的json格式为：{json_meta}")
     # 从json格式的数据描述中选取指定名称的数据

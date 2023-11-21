@@ -23,7 +23,7 @@ class QWen(Llm):
 
         gen = Generation()
         response = gen.call(
-            Generation.Models.qwen_plus, #   qwen_turbo qwen_plus
+            Generation.Models.qwen_plus, #   qwen_turbo qwen_plus qwen_max
             messages=messages,
             temperature=0.01,
             result_format='message',  # set the result to be "message" format.

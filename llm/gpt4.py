@@ -30,7 +30,7 @@ class GPT4(Llm):
         openai.api_key = key 
 
     def build_prompt(self, instruction, tools, examples):
-        examples = f" 工具集的使用范例如下：\n“““\n{examples}\n””” " # gpt4用不着例子也能搞定
+        examples = f" 工具集的使用举例如下：\n“““\n{examples}\n””” " # gpt4用不着例子也能搞定
         text  = prompt.format(instruction=instruction,tools=tools, examples=examples)
         print(f"输入给大语言模型的内容如下:{text}")
         return text
