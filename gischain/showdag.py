@@ -32,6 +32,11 @@ def refresh(frame, G, pos, shares):
     for node in G.nodes():
         node_name = node.get_name()
         node.attr['fillcolor'] = shares[node_name]['color']
+        # 如果任务节点的状态为doing，则通过修改节点的颜色，实现闪烁效果
+        if shares[node_name]['type'] == 'task' and shares[node_name]['status'] == 'doing' and frame % 2 == 1:
+            node.attr['fillcolor'] = "white"
+
+    # 重新绘制图形
     image_data = G.draw(format='png', prog='dot')
     image = Image.open(io.BytesIO(image_data))
     plt.imshow(image)
@@ -55,6 +60,5 @@ def show(shares):
     G.node_attr['style'] = 'filled'  # 设置节点样式为填充
     set_direction(G) # 自动设置合理的方向
     
-    refresh(None, G, pos, shares)
-    anim = FuncAnimation(fig, refresh, fargs=(G,pos, shares,), frames=100, repeat=True, interval=1000)
+    anim = FuncAnimation(fig, refresh, fargs=(G,pos, shares,), frames=range(100), repeat=True, interval=100)
     plt.show()

@@ -71,8 +71,8 @@ node_color_map = {
     # R G B
     ("task", "todo"):  "lightblue", # 浅蓝色
     # ("task", "ready"): "turquoise", # 绿松石色
-    ("task", "doing"): "gold", # 金色
-    ("task", "done"):  "violet", # 紫罗兰色
+    ("task", "doing"): "violet", # 紫罗兰色
+    ("task", "done"):  "gold", # 金色
     
     ("data", "noready"): "teal", # 蓝绿色
     ("data", "ready"): "lightgreen", # 浅蓝色

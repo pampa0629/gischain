@@ -17,9 +17,29 @@ def print_cvs(result):
     df = pd.read_csv(result)
     print(df)
 
+import os
+import shutil
+
+def delete_files_except(directory, keep_file):
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file != keep_file:
+                file_path = os.path.join(root, file)
+                os.remove(file_path)
+
+        for dir in dirs:
+            dir_path = os.path.join(root, dir)
+            shutil.rmtree(dir_path)
+
+
 if __name__ == "__main__":
     tools = json.loads(text)
-    result = rundag(tools, show=True, multirun=False)
+
+    # 指定目录路径和要保留的文件名
+    delete_files_except("./data/temp", "_README.md")
+    delete_files_except("./data/output", "_README.md")
+
+    result = rundag(tools, show=True, multirun=True)
     # base.print_everything(result)
     # from pprint import pprint
     # pprint(result)
