@@ -23,7 +23,6 @@ def deal_one_task_done(shares, name, G):
 def run_tools(tools, shares=None):
     # 按顺序执行工具list
     if shares != None:
-        from . import base
         G = base.resotreDAG(shares)
 
     result = ""
@@ -31,6 +30,7 @@ def run_tools(tools, shares=None):
         task_name = None
         if shares != None:
             task_name = json.dumps(tool) 
+            update_kv_dict(shares, task_name, {'status':'doing', 'color':node_color_map.get(('task', 'doing'))})
         result = define.call_tool(tool['name'], task_name, shares,tool['output'], **tool['inputs'])
         if shares != None:
             deal_one_task_done(shares, task_name, G)
@@ -67,15 +67,16 @@ def find_tool(tools, name):
 
 # 并行执行list中的工具
 def multi_run_tools(tools, shares):
-    import networkx as nx
+    import time
     import multiprocessing
 
     G = base.resotreDAG(shares)
     
     result = ""
+    childs = []
     # 如果不是所有任务完成，则继续循环
     while is_all_tasks_done(shares) != True:
-        childs = []
+        # 遍历所有的task，找到可以运行的task
         for name, data in shares.items():
             # 1)是node，而非edge；2）是task；3）状态是 todo；4）所有的input都已经ready，则可以运行
             if base.is_node(name,shares) and data["type"] == "task" and data["status"] == "todo" and task_is_ready(G,shares,name) == True:
@@ -88,10 +89,12 @@ def multi_run_tools(tools, shares):
                 child_process.start()
                 childs.append((name, child_process))
 
+        # 所有已经启动的子进程，只要有一个结束，就应该判断是否能启动下一个子进程
         for name, child_process in childs:
-            # 等待子进程结束
-            child_process.join()
-            result = deal_one_task_done(shares, name, G)
-
+            if child_process.is_alive() == False:
+                result = deal_one_task_done(shares, name, G)
+                childs.remove((name, child_process))
+                break
+        
     shares.update({"title":"GISChain Run Done."})
     return result
