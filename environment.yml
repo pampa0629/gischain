@@ -10,12 +10,11 @@ channels:
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
   - defaults
 dependencies:
-  - matplotlib-base=3.7.1=py311h2bf763f_0
   - pip:
-      - numpy==1.26.0
-      - dashscope==1.13.3
-      - geopandas==0.13.2
-      - gdal==3.7.2
-      - zhipuai==1.0.7
-      - openai==0.28.1
-      - pygraphviz==1.11
+      - numpy
+      - dashscope
+      - geopandas
+      - gdal
+      - zhipuai
+      - openai
+      - pygraphviz

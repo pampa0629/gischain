@@ -44,8 +44,11 @@ def deal_no_null(where:str):
 
 def filter(datafile:str, where:str, output:str):
     gdf = gpd.read_file(datafile)
+    print("before:",where)
     where = deal_no_null(where)
+    print("after:",where)
     filtered_gdf = gdf.query(where)
+    print(f"过滤前共有{len(gdf)}个要素，过滤后共有{len(filtered_gdf)}个要素")
     filtered_gdf.to_file(output, encoding=base.read_shp_encoding(datafile))
     return output
 

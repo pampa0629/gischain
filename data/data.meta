@@ -13,5 +13,14 @@
     },
     "weather.shp":{
         "description":"气象数据"
+    },
+    "规划用地.shp":{
+        "description":"南京市规划用地",
+        "fields":{
+            "YDFLDM":"用地类型"
+        }
+    },
+    "城区范围.shp":{
+        "description":"南京市城区范围"
     }
 }
