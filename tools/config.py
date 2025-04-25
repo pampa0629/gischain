@@ -13,3 +13,4 @@ def load_config(config_file):
     os.environ['wenxin_sk']  = config.get("wenxin", "sk")
     os.environ['text2sql_key']  = config.get("text2sql", "key")
     os.environ['gpt_key']  = config.get("gpt", "key")
+    os.environ['deepseek_key']  = config.get("deepseek", "key")

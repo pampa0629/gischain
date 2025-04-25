@@ -47,7 +47,7 @@ def show(shares):
     # 通过shares来创建DAG
     G = base.resotreDAG(shares)
 
-    fig = plt.figure(figsize=(16,12))
+    fig = plt.figure(figsize=(12,12))
     # 关闭横轴和纵轴
     ax = fig.add_subplot(111)
     ax.set_axis_off()
