@@ -11,7 +11,7 @@ from gischain.gischain import init_gischain
 # 因为内部用了多进程，所以需要在main函数中调用
 if __name__ == '__main__':
 
-    # 用自然语言描述的指令
+    # 用自然语言描述的指令 
     presume = "假定：步行五分钟能走300米，公园绿地类型的编码为1201,记得中间需要做数据融合。"
     instruction = presume + "计算南京市公园绿地步行五分钟的范围，占市区范围面积的比率。" 
     # 构造gischain，支持多种llm，都需要给出key
