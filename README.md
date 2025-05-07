@@ -59,6 +59,9 @@ Q，提示openai没有ChatComletion属性，怎么办？
 A：这是因为openai的版本过低，需要升级到至少0.28.1。先 pip uninstall openai ,再 pip install openai即可。
 
 ## 版本说明
+### v0.1.7
+1. 合并function call的实现，支持较为复杂的任务指令，并支持先得到工具的json串，之后再执行
+
 ### v0.1.6
 1. 增加example_fc_xx.py，走通最简单的function call技术路线
 
