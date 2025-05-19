@@ -6,40 +6,57 @@ import numpy as np
 # 启用异常处理
 gdal.UseExceptions()
 
-desc = """{
-	"name":"area",
-	"description":"计算面积；如果输入是矢量文件，则计算所有要素的面积和；如果输入是栅格文件，则计算所有非nodata像元的面积和",
-	"inputs":{
-		"datafile":"要求面积的数据文件"
+name = "area"
+description="计算面积；如果输入是矢量文件，则计算所有要素的面积和；如果输入是栅格文件，则计算所有非nodata像元的面积和；返回计算得到的面积的json文件。"
+parameters = {
+    "datafile": {
+        "type": "string",
+        "description": "要求面积的数据文件"
     },
-    "output":"面积结果"
-}"""
+    "output":{
+        "type": "string",
+        "description": "面积结果文件，json格式"
+    }
+}
 
-example = """
-指令：计算土地的面积；土地数据是 land.shp。
-json: [{
-	"name":"area",
-	"inputs":{
-		"datafile":"land.shp",
-	},
-    "output":"area_result.json"
-}]
 
-指令：计算海拔在200米以下的面积；地形数据是 terrain.tif 。
-json: [{
-	"name":"area",
-	"inputs":{
-		"datafile":"terrain.tif",
-	},
-    "output":"area_result.json"
-}]"""
+import json
+from . import fc
+core = fc.build_fc_core(name, description, parameters)
+# core_desc = json.dumps(core_obj) # 算子核心内容的字符描述
+# 直接给function call的tools参数中用的
+fc_obj = fc.build_fc_obj(core)
+
+example = ""
+# """
+# 指令：计算土地的面积；土地数据是 land.shp。
+# json: [{
+# 	"name":"area",
+#     "parameters":{
+#         "inputs":{
+#             "datafile":"land.shp"
+#         },
+#         "output":"area_result.json"
+#     }
+# }]
+
+# 指令：计算海拔在200米以下的面积；地形数据是 terrain.tif 。
+# json: [{
+# 	"name":"area",
+#      "parameters":{
+#         "inputs":{
+#             "datafile":"terrain.tif"
+#         },
+#         "output":"area_result.json"
+#     }
+# }]"""
 
 def check(tool):    
-    inputs = tool["inputs"]
+    inputs = tool["parameters"]["inputs"]
     for key in inputs:
-        if key != "datafile":
-            return False, f"对于工具{tool['name']}，输入的参数必须是datafile，而不能有{key}；"
-    return True, ""
+        if key == "datafile" :
+            return True, ""
+    return False, f"对于工具{tool['name']}，输入的参数必须是datafile，而不能有{key}；"
 
 def area(datafile:str, output=None) -> float:
     _, ext = os.path.splitext(datafile)

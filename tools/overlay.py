@@ -6,42 +6,70 @@ from . import base
 # 启用异常处理
 gdal.UseExceptions()
 
-desc = """{
-	"name":"overlay",
-	"description":"叠加分析;支持矢量与矢量、矢量与栅格、栅格与栅格的叠加分析;如果两个输入文件都是矢量，则结果为矢量文件；如果两个输入文件一个为栅格、另一个为矢量，则结果为栅格文件（tif格式）；如果两个输入文件都是栅格，则结果也为栅格文件；目前仅支持intersection模式",
-	"inputs":{
-		"datafile1":"参与叠加分析的数据文件1",
-		"datafile2":"参与叠加分析的数据文件2"
-	},
-    "output":"叠加分析结果文件"
-}"""
+# desc = """{
+# 	"name":"overlay",
+# 	"description":"叠加分析;支持矢量与矢量、矢量与栅格、栅格与栅格的叠加分析;如果两个输入文件都是矢量，则结果为矢量文件；如果两个输入文件一个为栅格、另一个为矢量，则结果为栅格文件（tif格式）；如果两个输入文件都是栅格，则结果也为栅格文件；目前仅支持intersection模式",
+# 	"inputs":{
+# 		"datafile1":"参与叠加分析的数据文件1",
+# 		"datafile2":"参与叠加分析的数据文件2"
+# 	},
+#     "output":"叠加分析结果文件"
+# }"""
 
-example = """
-指令：求海拔100米以下的耕地面积。耕地数据是farmland.shp，海拔100米以下地形数据为terrain_100.tif。
-json:[{
-	"name":"overlay",
-	"inputs":{
-		"datafile1":"farmland.shp",
-		"datafile2":"terrain_100.tif"
-	},
-    "output":"overlay_farmland_terrain_100.tif"
-}]
 
-指令：求坡度小于10度之间，海拔小于500米的数据。海拔小于500米的地形数据为terrain_500.tif，坡度小于10度的坡度数据为slope_10.tif。
-json:[
-{
-	"name":"overlay",
-	"inputs":{
-		"datafile1":"slope_20.tif",
-		"datafile2":"terrain_500.tif"
-	},
-    "output":"overlay_slope_terrain.tif"
-}]
-"""
+name = "overlay" 
+description="叠加分析;支持矢量与矢量、矢量与栅格、栅格与栅格的叠加分析;如果两个输入文件都是矢量，则结果为矢量文件；如果两个输入文件一个为栅格、另一个为矢量，则结果为栅格文件（tif格式）；如果两个输入文件都是栅格，则结果也为栅格文件；目前仅支持intersection模式"
+parameters = {
+    "datafile1": {
+        "type": "string",
+        "description": "参与叠加分析的数据文件1"
+    },
+    "datafile2": {
+        "type": "string",
+        "description": "参与叠加分析的数据文件2"
+    },
+    "output":{
+        "type": "string",
+        "description": "叠加分析结果文件"
+    }
+}
+
+
+import json
+from . import fc
+core = fc.build_fc_core(name, description, parameters)
+# core_desc = json.dumps(core_obj) # 算子核心内容的字符描述
+# 直接给function call的tools参数中用的
+fc_obj = fc.build_fc_obj(core)
+
+example = ""
+
+# example = """
+# 指令：求海拔100米以下的耕地面积。耕地数据是farmland.shp，海拔100米以下地形数据为terrain_100.tif。
+# json:[{
+# 	"name":"overlay",
+# 	"inputs":{
+# 		"datafile1":"farmland.shp",
+# 		"datafile2":"terrain_100.tif"
+# 	},
+#     "output":"overlay_farmland_terrain_100.tif"
+# }]
+
+# 指令：求坡度小于10度之间，海拔小于500米的数据。海拔小于500米的地形数据为terrain_500.tif，坡度小于10度的坡度数据为slope_10.tif。
+# json:[
+# {
+# 	"name":"overlay",
+# 	"inputs":{
+# 		"datafile1":"slope_20.tif",
+# 		"datafile2":"terrain_500.tif"
+# 	},
+#     "output":"overlay_slope_terrain.tif"
+# }]
+# """
 
 def check(tool):
-    datafile1 = tool["inputs"]["datafile1"]
-    datafile2 = tool["inputs"]["datafile2"]
+    datafile1 = tool["parameters"]["inputs"]["datafile1"]
+    datafile2 = tool["parameters"]["inputs"]["datafile2"]
     # 当两个输入文件有一个是tif时，输出必须是tif文件
     if datafile1.endswith('.tif') or datafile2.endswith('.tif'):
         if tool["output"].endswith('.tif') == False:

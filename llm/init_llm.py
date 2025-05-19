@@ -1,9 +1,12 @@
 
-def init_llm(name, key=None):
+def init_llm(name, key=None, funcall=False):
     if key == None:
             raise Exception("调用在线大语言模型需要一个key，请到对应的网站申请")
     
-    if name == "chatglm":
+    if funcall: # 特殊对待
+        from llm import llm_fc
+        allm = llm_fc.Llm_fc(name,key)
+    elif name == "chatglm":
         from llm import chatglm
         allm = chatglm.ChatGLM()
     elif name == "qwen-turbo":

@@ -16,3 +16,6 @@ class Llm:
     def invoke(self, text):
         pass
 
+    def invode_with_fc(self, messages, tools):
+        pass
+

@@ -2,7 +2,7 @@
 
 # 从一对符号中提取内容
 def extract_content(string, left='[', right=']'):
-    index_left = string.find(left)
+    index_left = string.rfind(left)
     index_right = string.rfind(right)
     return string[index_left+1:index_right]
 
