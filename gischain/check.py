@@ -8,10 +8,10 @@ def check_use_temp_data(tools):
     # 先把所有的中间数据都放到temps_used中，统一记录为没有使用过
     for index, tool in enumerate(tools):
         if index < len(tools) - 1: # 要跳过最后一个工具的输出
-            temps_used[tool['output']] = {'tool':tool['name'], 'used':False}
+            temps_used[tool['parameters']['output']] = {'tool':tool['name'], 'used':False}
     # 再遍历一遍，把中间数据的使用情况记录下来
     for tool in tools:
-        for input in tool['inputs'].values():
+        for input in tool['parameters']['inputs'].values():
             if isinstance(input, list)==False and input in temps_used:
                 temps_used[input]['used'] = True
     
@@ -27,8 +27,8 @@ def check_use_temp_data(tools):
 def check_first_input_file(tools):
     import os
     tool = tools[0]
-    for key, value in tool['inputs'].items():
-        if "file" in key and os.path.exists(value) == False:
+    for key, value in tool['parameters'].items():
+        if "file" in key and key!='output' and os.path.exists(value) == False:
             return False, f"文件{value}没有在指定的位置，请根据要求组合好正确的数据目录；"
     return True, ""
 
@@ -48,11 +48,11 @@ def check_input_file(tools, instruction, data_descs):
     print(f"check中，所有的files为：{files}")
 
     for tool in tools:
-        for key, value in tool['inputs'].items():
+        for key, value in tool['parameters'].items():
             if "file" in key:
                 if find_in_list(os.path.basename(value),files)==False:
                     return False, f"工具 {tool['name']} 的输入文件 {value} 无法确定来源，不要自己臆造数据文件；"
-        files.append(tool['output']) # 把工具的输出也加入到文件列表中
+        files.append(tool['parameters']['output']) # 把工具的输出也加入到文件列表中
     return True, ""
 
 # 根据大模型返回的工具列表，检查是否存在可能的错误。若存在错误，则返回False和检查出来的所有错误信息

@@ -63,3 +63,15 @@ g_template = """
 {end}
 任务指令：{instruction}
 """
+
+g_fc_system= """
+You are a friendly chatbot that can use external tools to offer reliable assistance to human beings. 
+"""
+
+g_fc_attention = """
+约束条件：
+1，输出的tools中，arguments的output参数必须提供出来，不能省略。请注意输入参数和输出参数要严格对应，避免错别字；
+2，输入的数据文件名字一定要严格遵从给出的数据json描述，不要翻译为英文；也不要自行给数据文件添加不存在的新目录。
+3，原始数据文件放在./data目录下，中间生成的文件放在./data/temp目录下，最终结果放在./data/output目录下；
+4，tools调用的参数中一定要组合出完整的文件路径名，避免工具实际执行时找不到对应的数据文件。
+"""

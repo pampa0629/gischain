@@ -16,7 +16,7 @@ if __name__ == '__main__':
     instruction = presume + "计算南京市公园绿地步行五分钟的范围，占市区范围面积的比率。" 
     # 构造gischain，支持多种llm，都需要给出key
     # chain = init_gischain(llm="chatglm", key=os.environ.get("glm_key")) # 
-    chain = init_gischain(llm="qwen-turbo", key=os.environ.get("qwen_key")) # 提高很多
+    chain = init_gischain(llm="qwen-turbo", key=os.environ.get("qwen_key"), funcall=True) # 提高很多
     # chain = init_gischain(llm="deepseek", key=os.environ.get("deepseek_key")) # 提高很多
     # chain = init_gischain(llm="ErnieBot4", key={"ak":os.environ.get("wenxin_ak"),"sk":os.environ.get("wenxin_sk")} ) # 
     # chain = init_gischain(llm="text2sql", key=os.environ.get("text2sql_key")) # 可以支持简单的指令

@@ -19,10 +19,10 @@ def get_row_col(G):
 # 设置G的方向
 def set_direction(G):
     row, col = get_row_col(G)
-    direction = 'LR' # 默认为左右
+    # direction = 'LR' # 默认为左右
     # 如果行数大于列数的2倍，或者列数大于500，则设置为上下
-    if col / row > 2 or col > 500:
-        direction = 'TB'
+    # if col / row > 2 or col > 500:
+    direction = 'TB' # 上下更好看
     G.graph_attr.update(rankdir=direction) # TB：上下；LR：左右
     # print("direction:", direction)
 

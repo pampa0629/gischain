@@ -110,6 +110,8 @@ def is_edge(key,shares):
     
 # 从 tools 中共享变量
 def buildShares(tools):
+    # print("in buildShares")
+
     # 用于多进程共享变量
     import multiprocessing
     manager = multiprocessing.Manager()
@@ -135,7 +137,8 @@ def buildShares(tools):
         # data 节点增加status属性，包括以下状态：
         #   noready  尚未准备好，等待上游task的输出
         #   ready 已经准备好，可以为后续task使用
-        inputs = tool["inputs"]
+        output = tool["parameters"]["output"]
+        inputs = {key: value for key, value in tool["parameters"].items() if key != "output"}
         for key,value in inputs.items():
             status = input_ready_status(key, value)
             value = str(value) # 转换为字符串，避免出现数字型的key
@@ -143,8 +146,7 @@ def buildShares(tools):
             shares.update({value: {"label":label, "type":'data',  "shape":data_shape,"status":status, "color":node_color_map.get(('data', status))}})
             # 对于 edge，用tuple表示key，如：(node_name1, node_name2)
             shares.update({(value, task_name):{}})
-            
-        output = tool["output"]
+        
         label = get_base_filename(output) # 只保留文件名，去掉路径
         shares.update({output: {"label":label, "type":'data',"shape":data_shape,"status":'noready', "color":node_color_map.get(('data', 'noready'))}})
         # 对于 edge，用tuple表示key，如：(node_name1, node_name2)

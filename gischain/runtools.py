@@ -31,7 +31,11 @@ def run_tools(tools, shares=None):
         if shares != None:
             task_name = json.dumps(tool) 
             update_kv_dict(shares, task_name, {'status':'doing', 'color':node_color_map.get(('task', 'doing'))})
-        result = define.call_tool(tool['name'], task_name, shares,tool['output'], **tool['inputs'])
+        # output = 
+        # 去掉tool['parameters'] 中的 output属性
+        # output = tool['parameters'].pop('output', None)
+        # tool['parameters']['output'] = None
+        result = define.call_tool(tool['name'], task_name, shares, **tool['parameters'])
         if shares != None:
             deal_one_task_done(shares, task_name, G)
     
@@ -85,7 +89,7 @@ def multi_run_tools(tools, shares):
                 # 从shares的task名字中，恢复tool的信息
                 tool = json.loads(name)
                 # 启动子进程
-                child_process = multiprocessing.Process(target=define.call_tool, args=(tool["name"], name, shares,tool['output']), kwargs=tool['inputs'])
+                child_process = multiprocessing.Process(target=define.call_tool, args=(tool["name"], name, shares,tool['parameters']['output']), kwargs=tool['parameters'])
                 child_process.start()
                 childs.append((name, child_process))
 
