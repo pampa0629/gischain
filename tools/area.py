@@ -51,8 +51,8 @@ example = ""
 #     }
 # }]"""
 
-def check(tool):    
-    inputs = tool["parameters"]["inputs"]
+def check(tool):
+    inputs = tool["parameters"]
     for key in inputs:
         if key == "datafile" :
             return True, ""

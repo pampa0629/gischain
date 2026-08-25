@@ -57,7 +57,7 @@ example = ""
 # """
 
 def check(tool):
-    datafile = tool["parameters"]["inputs"]["datafile"]
+    datafile = tool["parameters"]["datafile"]
     # 必须是shp文件
     if not datafile.endswith(".shp"):
         return False, f"对于工具{tool['name']}，输入的datafile参数必须是shp文件，而不能是{datafile}；"

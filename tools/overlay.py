@@ -68,11 +68,11 @@ example = ""
 # """
 
 def check(tool):
-    datafile1 = tool["parameters"]["inputs"]["datafile1"]
-    datafile2 = tool["parameters"]["inputs"]["datafile2"]
+    datafile1 = tool["parameters"]["datafile1"]
+    datafile2 = tool["parameters"]["datafile2"]
     # 当两个输入文件有一个是tif时，输出必须是tif文件
     if datafile1.endswith('.tif') or datafile2.endswith('.tif'):
-        if tool["output"].endswith('.tif') == False:
+        if tool["parameters"]["output"].endswith('.tif') == False:
             return False, f"对于工具{tool['name']}，当两个输入文件有一个是tif时，输出必须是tif文件；"
     return True, ""
 

@@ -51,7 +51,6 @@ class GISChain:
             if ok:
                 break
             # 这里把errors也作为提示词，再次运行
-            import json
             print(f"经过第{i+1}次检查，{errors}。")
             tools = self.llm.invoke(prompt, json.dumps(tools), errors)
 
@@ -161,6 +160,8 @@ def rundag(tools, show=True, multirun=False):
 
 # 根据大模型返回的结果，和检查的结果，输出最终的结果
 def output_result(ok, tools, errors):
+    if tools is None: # 大模型调用失败时可能返回None，做防御
+        tools = []
     # 输出tools信息
     print(f"解析得到的工具有{len(tools)}个，列表和参数如下:")
     toolstr = [f'工具: {item}' for item in tools]

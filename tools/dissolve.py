@@ -49,7 +49,7 @@ def dissolve(datafile:str, output:str):
 
 from . import base
 def check(tool):
-    datafile = tool["parameters"]["inputs"]["datafile"]
+    datafile = tool["parameters"]["datafile"]
     # 得到数据文件的后缀名
     if datafile.endswith('.shp') == False:
        return False, f"{datafile} 现在只支持shp文件；"
