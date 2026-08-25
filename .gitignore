@@ -473,3 +473,8 @@ gischain/bin/pip3.12
 gischain/bin/python
 gischain/bin/python3
 gischain/bin/python3.12
+
+# 运行时的中间产物和最终结果（不要污染仓库）
+data/temp/
+data/output/
+

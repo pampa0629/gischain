@@ -1,20 +1,29 @@
 name: gischain
+# 统一走 conda-forge（原 USTC/清华镜像 free 频道已停更，混用多镜像易导致依赖解析失败）
+#
+# 版本要点（2026-08 验证通过）：
+# - gdal=3.13.1 / geopandas=1.1.2：修复 CVE-2025-69662（geopandas to_postgis SQL 注入）
+#   及 Dependabot 报告的 GDAL 漏洞
+# - numpy 必须 >=2.0：conda 的 gdal 3.13.1 按 numpy 2.x ABI 编译
+# - matplotlib 必须 >=3.9：<3.9 的版本与 numpy 2 不兼容
+# - 原生 GIS 栈（gdal/geopandas/pyproj）一律走 conda，避免 pip 源码编译时
+#   因系统 libgdal 版本不匹配而失败；pip 只装三个纯 Python 的 LLM SDK
 channels:
-  - http://mirrors.ustc.edu.cn/anaconda/pkgs/free
-  - anaconda
-  - http://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge
-  - http://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
-  - http://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
-  - http://mirrors.ustc.edu.cn/anaconda/pkgs/free/
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
-  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
-  - defaults
+  - conda-forge
 dependencies:
+  - python=3.12          # gdal 3.13.1 的 conda 构建仅有 py312/313/314
+  - gdal=3.13.1
+  - geopandas=1.1.2
+  - matplotlib>=3.9,<4
+  - numpy>=2.0,<3
+  - pygraphviz
+  - pip
   - pip:
-      - numpy
-      - dashscope
-      - geopandas
-      - gdal
-      - zhipuai
-      - openai
-      - pygraphviz
+      - dashscope==1.13.3
+      - zhipuai==1.0.7
+      - openai==0.28.1
+
+# 注意：若 shell 中全局设置了 PROJ_DATA 指向其它环境（如 anaconda base），
+# 会导致 proj.db 版本不匹配、EPSG 解析报错。本环境已在
+# etc/conda/activate.d/proj.sh 中自动修正；手动运行时请确保：
+#   export PROJ_DATA=$CONDA_PREFIX/share/proj
